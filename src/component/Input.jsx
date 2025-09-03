@@ -1,21 +1,24 @@
 import React from "react";
 
 const Input = ({ config }) => {
-  if (!config.visible) return null;
+  
+  const { visible, fieldid, defaultvalue, controlwidth, disable, inputlength, labelwidth, label, controltype } = config;
+
+  if (!visible) return null;
 
   const commonProps = {
-    id: config.fieldid,
-    name: config.fieldid,
-    defaultValue: config.defaultvalue,
-    style: { width: config.controlwidth },
-    disabled: config.disable === 1,
+    id: fieldid,
+    name: fieldid,
+    defaultValue: defaultvalue,
+    style: { width: controlwidth },
+    disabled: disable === 1,
     className: "border border-gray-500 px-[8px] py-[3px] text-sm rounded-md w-full",
   };
 
   const renderField = {
-    TXT: <input type="text" maxLength={config.inputlength} {...commonProps} />,
+    TXT: <input type="text" maxLength={inputlength} {...commonProps} />,
     DATE: <input type="date" {...commonProps} />,
-    NUM: <input type="number" max={config.inputlength} {...commonProps} />,
+    NUM: <input type="number" max={inputlength} {...commonProps} />,
     DROPDOWN: (
       <select {...commonProps}>
         <option value="">-- Select --</option>
@@ -28,14 +31,10 @@ const Input = ({ config }) => {
 
   return (
     <div className="flex gap-3 mb-4">
-      <label htmlFor={config.fieldid} style={{ width: config.labelwidth }} className="text-sm">
-        {config.label}
+      <label htmlFor={fieldid} style={{ width: labelwidth }} className="text-sm">
+        {label}
       </label>
-      {config.inputlength > 8 && config.controltype === "TXT" ? (
-        <textarea {...commonProps} maxLength={config.inputlength}></textarea>
-      ) : (
-        renderField[config.controltype]
-      )}
+      {inputlength > 8 && controltype === "TXT" ? <textarea {...commonProps} maxLength={inputlength}></textarea> : renderField[controltype]}
     </div>
   );
 };
