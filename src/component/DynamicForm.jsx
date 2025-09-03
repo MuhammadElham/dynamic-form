@@ -246,13 +246,14 @@ const DynamicForm = () => {
   ];
 
   return (
-    <>
+    <div className="p-20">
+    <h1 className="text-2xl font-semibold">Heading </h1>
       <form>
         {fieldConfig.map((field) => (
           <Input key={field.tabindex} config={field} />
         ))}
       </form>
-    </>
+    </div>
   );
 };
 
