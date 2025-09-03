@@ -1,7 +1,6 @@
 import React from "react";
 
 const Input = ({ config }) => {
-  
   const { visible, fieldid, defaultvalue, controlwidth, disable, inputlength, labelwidth, label, controltype } = config;
 
   if (!visible) return null;
@@ -12,7 +11,7 @@ const Input = ({ config }) => {
     defaultValue: defaultvalue,
     style: { width: controlwidth },
     disabled: disable === 1,
-    className: "border border-gray-500 px-[8px] py-[3px] text-sm rounded-md w-full",
+    className: "border border-gray-500 px-[8px] py-[3px] text-sm rounded-md w-[160px]",
   };
 
   const renderField = {
@@ -31,10 +30,10 @@ const Input = ({ config }) => {
 
   return (
     <div className="flex gap-3 mb-4">
-      <label htmlFor={fieldid} style={{ width: labelwidth }} className="text-sm">
+      <label htmlFor={fieldid} style={{ minWidth: "140px", width: labelwidth }} className="text-sm">
         {label}
       </label>
-      {inputlength > 8 && controltype === "TXT" ? <textarea {...commonProps} maxLength={inputlength}></textarea> : renderField[controltype]}
+      {inputlength > 250 && controltype === "TXT" ? <textarea {...commonProps} maxLength={inputlength}></textarea> : renderField[controltype]}
     </div>
   );
 };
