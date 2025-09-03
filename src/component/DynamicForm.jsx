@@ -105,7 +105,7 @@ const DynamicForm = () => {
       processcode: "",
       transactioncode: "PSCPO",
       userid: "",
-      inputlength: 12,
+      inputlength: 6,
       controlwidth: 140,
       labelwidth: 120,
       anchor: "",
@@ -247,7 +247,7 @@ const DynamicForm = () => {
 
   return (
     <div className="p-20">
-    <h1 className="text-2xl font-semibold">Heading </h1>
+      <h1 className="text-2xl font-bold mb-8">Purchase Order Form </h1>
       <form>
         {fieldConfig.map((field) => (
           <Input key={field.tabindex} config={field} />
