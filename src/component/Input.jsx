@@ -1,9 +1,10 @@
 import React from "react";
 
 const Input = ({ config, onChange }) => {
-  const { visible, fieldid, defaultvalue, controlwidth, disable, inputlength, labelwidth, label, controltype, options } = config;
+  const { visible, fieldid, defaultvalue, controlwidth, disable, inputlength, label, controltype, options } = config;
 
   if (!visible) return null;
+  // Fix Field Width
   const finalWidth = controlwidth > 160 ? controlwidth : 160;
 
   const commonProps = {
@@ -12,7 +13,7 @@ const Input = ({ config, onChange }) => {
     defaultValue: defaultvalue,
     disabled: disable === 1,
     className: "border border-gray-500 px-[8px] py-[3px] text-sm rounded-sm",
-    style: { width: finalWidth, minWidth: "160px", maxWidth: controlwidth > 160 ? controlwidth : "160px" },
+    style: { width: finalWidth },
     onChange: (e) => onChange(fieldid, e.target.value),
   };
 
@@ -34,7 +35,7 @@ const Input = ({ config, onChange }) => {
 
   return (
     <div className="flex gap-3 mb-4">
-      <label htmlFor={fieldid} style={{ minWidth: "140px", width: labelwidth }} className="text-sm">
+      <label htmlFor={fieldid} className="text-sm min-w-[140px]">
         {label}
       </label>
       {inputlength > 250 && controltype === "TXT" ? (
