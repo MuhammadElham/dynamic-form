@@ -1,7 +1,7 @@
 import React from "react";
 
-const Input = ({ config }) => {
-  const { visible, fieldid, defaultvalue, controlwidth, disable, inputlength, labelwidth, label, controltype,options } = config;
+const Input = ({ config, onChange }) => {
+  const { visible, fieldid, defaultvalue, controlwidth, disable, inputlength, labelwidth, label, controltype, options } = config;
 
   if (!visible) return null;
   const finalWidth = controlwidth > 160 ? controlwidth : 160;
@@ -13,6 +13,7 @@ const Input = ({ config }) => {
     disabled: disable === 1,
     className: "border border-gray-500 px-[8px] py-[3px] text-sm rounded-sm",
     style: { width: finalWidth, minWidth: "160px", maxWidth: controlwidth > 160 ? controlwidth : "160px" },
+    onChange: (e) => onChange(fieldid, e.target.value),
   };
 
   const renderField = {
@@ -23,7 +24,9 @@ const Input = ({ config }) => {
       <select {...commonProps}>
         <option value="">-- Select --</option>
         {options?.map((opts, idx) => (
-          <option key={idx} value={opts}>{opts}</option>
+          <option key={idx} value={opts}>
+            {opts}
+          </option>
         ))}
       </select>
     ),
