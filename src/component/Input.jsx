@@ -33,7 +33,11 @@ const Input = ({ config }) => {
       <label htmlFor={fieldid} style={{ minWidth: "140px", width: labelwidth }} className="text-sm">
         {label}
       </label>
-      {inputlength > 250 && controltype === "TXT" ? <textarea {...commonProps} maxLength={inputlength}></textarea> : renderField[controltype]}
+      {inputlength > 250 && controltype === "TXT" ? (
+        <textarea {...commonProps} style={{ width: controlwidth, height: "150px" }}></textarea>
+      ) : (
+        renderField[controltype]
+      )}
     </div>
   );
 };
