@@ -4,14 +4,15 @@ const Input = ({ config }) => {
   const { visible, fieldid, defaultvalue, controlwidth, disable, inputlength, labelwidth, label, controltype } = config;
 
   if (!visible) return null;
+  const finalWidth = controlwidth > 160 ? controlwidth : 160;
 
   const commonProps = {
     id: fieldid,
     name: fieldid,
     defaultValue: defaultvalue,
-    style: { width: controlwidth },
     disabled: disable === 1,
-    className: "border border-gray-500 px-[8px] py-[3px] text-sm rounded-md w-[160px]",
+    className: "border border-gray-500 px-[8px] py-[3px] text-sm rounded-sm",
+    style: { width: finalWidth, minWidth: "160px", maxWidth: controlwidth > 160 ? controlwidth : "160px" },
   };
 
   const renderField = {
@@ -34,7 +35,7 @@ const Input = ({ config }) => {
         {label}
       </label>
       {inputlength > 250 && controltype === "TXT" ? (
-        <textarea {...commonProps} style={{ width: controlwidth, height: "150px" }}></textarea>
+        <textarea {...commonProps} style={{ width: finalWidth, height: "150px" }}></textarea>
       ) : (
         renderField[controltype]
       )}
