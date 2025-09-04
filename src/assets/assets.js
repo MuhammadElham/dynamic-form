@@ -57,6 +57,7 @@ export const fieldConfig = [
     inputlength: 20,
     controlwidth: 160,
     labelwidth: 120,
+    options: ["INV001", "INV002", "INV003"],
     anchor: "",
     tabindex: 1,
     controltype: "DROPDOWN",

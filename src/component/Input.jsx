@@ -1,7 +1,7 @@
 import React from "react";
 
 const Input = ({ config }) => {
-  const { visible, fieldid, defaultvalue, controlwidth, disable, inputlength, labelwidth, label, controltype } = config;
+  const { visible, fieldid, defaultvalue, controlwidth, disable, inputlength, labelwidth, label, controltype,options } = config;
 
   if (!visible) return null;
   const finalWidth = controlwidth > 160 ? controlwidth : 160;
@@ -22,9 +22,9 @@ const Input = ({ config }) => {
     DROPDOWN: (
       <select {...commonProps}>
         <option value="">-- Select --</option>
-        <option value="INV001">INV001</option>
-        <option value="INV002">INV002</option>
-        <option value="INV003">INV003</option>
+        {options?.map((opts, idx) => (
+          <option key={idx} value={opts}>{opts}</option>
+        ))}
       </select>
     ),
   };
