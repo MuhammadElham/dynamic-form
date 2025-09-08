@@ -1,10 +1,12 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { Search } from "lucide-react";
 
-const Input = ({ config, onChange }) => {
-  const { visible, fieldid, defaultvalue, controlwidth, disable, inputlength, label, controltype, options } = config;
+const Input = ({ fieldid }) => {
+  const field = useSelector((state) => state.webConfig.config?.find((f) => f.fieldid === fieldid));
 
-  if (!visible) return null;
-  // Fix Field Width
+  if (!field) return null;
+  const { label, defaultvalue, controlwidth, disable, inputlength, controltype, displayhelpobject } = field;
   const finalWidth = controlwidth > 160 ? controlwidth : 160;
 
   const commonProps = {
@@ -14,23 +16,13 @@ const Input = ({ config, onChange }) => {
     disabled: disable === 1,
     className: "border border-gray-500 px-[8px] py-[3px] text-sm rounded-sm",
     style: { width: finalWidth },
-    onChange: (e) => onChange(fieldid, e.target.value),
+    readOnly: displayhelpobject ? true : false,
   };
 
   const renderField = {
     TXT: <input type="text" maxLength={inputlength} {...commonProps} />,
-    DATE: <input type="date" {...commonProps} />,
+    DTE: <input type="date" {...commonProps} />,
     NUM: <input type="number" max={inputlength} {...commonProps} />,
-    DROPDOWN: (
-      <select {...commonProps}>
-        <option value="">-- Select --</option>
-        {options?.map((opts, idx) => (
-          <option key={idx} value={opts}>
-            {opts}
-          </option>
-        ))}
-      </select>
-    ),
   };
 
   return (
@@ -38,13 +30,19 @@ const Input = ({ config, onChange }) => {
       <label htmlFor={fieldid} className="text-sm min-w-[140px]">
         {label}
       </label>
-      {inputlength > 250 && controltype === "TXT" ? (
-        <textarea {...commonProps} style={{ width: finalWidth, height: "150px" }}></textarea>
-      ) : (
-        renderField[controltype]
-      )}
+      <div className="flex items-center gap-2">
+        {inputlength > 250 && controltype === "TXT" ? (
+          <textarea {...commonProps} style={{ width: finalWidth, height: "150px" }} />
+        ) : (
+          renderField[controltype]
+        )}
+        {displayhelpobject && (
+          <button className="p-1 border rounded hover:bg-gray-100 cursor-pointer">
+            <Search size={16} />
+          </button>
+        )}
+      </div>
     </div>
   );
 };
-
 export default Input;

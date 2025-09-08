@@ -1,39 +1,27 @@
-import React, { useState } from "react";
+import React from "react";
 import Input from "./Input";
-import { fieldConfig } from "../assets/assets.js";
+import TextDisplay from "./TextDisplay";
 
 const DynamicForm = () => {
-  const [formData, setFormData] = useState({});
-
-  const handleChange = (fieldId, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [fieldId]: value,
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Form Data = ", formData);
-  };
-
   return (
-    <div className="p-14">
-      <form onSubmit={handleSubmit} className="bg-white p-7">
-        {fieldConfig.map((field) => {
-          if (field.type === "heading") {
-            return (
-              <h1 key={`heading-${field.index}`} className="text-2xl font-bold mb-8">
-                {field.label}
-              </h1>
-            );
-          }
-          return <Input key={field.tabindex} config={field} onChange={handleChange} />;
-        })}
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded mt-6 cursor-pointer">
-          Save
-        </button>
-      </form>
+    <div className="p-12">
+      <div className="bg-white shadow-md p-7 rounded-md">
+        <Input fieldid="purchaseorderno" />
+        <Input fieldid="purchasetype" />
+        <TextDisplay text="GRBPSPOGRB09" />
+        <Input fieldid="purchaseaccount" />
+        <Input fieldid="invoiceaccount" />
+        <Input fieldid="invoiceaddressid" />
+        <TextDisplay text="GRBPSPOGRB10" />
+        <Input fieldid="postingdate" />
+        <Input fieldid="requireddate" />
+        <Input fieldid="notes" />
+        {/* <TextDisplay text="GRBPSPOGRB02" />
+        <Input fieldid="deliverytermno" />
+        <Input fieldid="deliverymodeno" />
+        <Input fieldid="contactno" />
+        <Input fieldid="deliveryaddress" /> */}
+      </div>
     </div>
   );
 };
