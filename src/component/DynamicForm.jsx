@@ -16,11 +16,11 @@ const DynamicForm = () => {
         <Input fieldid="postingdate" />
         <Input fieldid="requireddate" />
         <Input fieldid="notes" />
-        {/* <TextDisplay text="GRBPSPOGRB02" />
+        <TextDisplay text="GRBPSPOGRB02" />
         <Input fieldid="deliverytermno" />
         <Input fieldid="deliverymodeno" />
         <Input fieldid="contactno" />
-        <Input fieldid="deliveryaddress" /> */}
+        <Input fieldid="deliveryaddress" />
       </div>
     </div>
   );
