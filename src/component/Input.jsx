@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Search } from "lucide-react";
-import MyGrid from "./MyGrid";
-import HelpGrid from "./HelpGrid/HelpGrid";
+
 
 const Input = ({ fieldid }) => {
   const field = useSelector((state) => state.webConfig.config?.find((f) => f.fieldid === fieldid));
 
   if (!field) return null;
   const { label, defaultvalue, controlwidth, disable, inputlength, controltype, displayhelpobject } = field;
-  const [showGrid, setShowGrid] = useState(false);
   const finalWidth = controlwidth > 160 ? controlwidth : 160;
 
   const commonProps = {
@@ -41,23 +39,12 @@ const Input = ({ fieldid }) => {
             renderField[controltype]
           )}
           {displayhelpobject && (
-            <button onClick={() => setShowGrid(!showGrid ? true : false)} className="p-1 border rounded hover:bg-gray-100 cursor-pointer">
+            <button className="p-1 border rounded hover:bg-gray-100 cursor-pointer">
               <Search size={16} />
             </button>
           )}
         </div>
       </div>
-      {showGrid && (
-        <div className="my-4 border p-3 rounded shadow">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-sm font-bold">Search Results</h2>
-            <button className="text-red-500 text-xs font-semibold cursor-pointer" onClick={() => setShowGrid(false)}>
-              Close
-            </button>
-          </div>
-          <HelpGrid />
-        </div>
-      )}
     </>
   );
 };
