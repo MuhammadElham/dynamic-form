@@ -1,11 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { config } from "../assets/config.js";
-import { test } from "../assets/test.js";
 
 const initialState = {
   config: config.Fields.Config,
   translation: config.Fields.ControlTranslations,
-  grids: test,
+  grids: config.Grids[4],
 };
 
 const webConfigSlice = createSlice({

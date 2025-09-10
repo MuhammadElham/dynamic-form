@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Search } from "lucide-react";
 import MyGrid from "./MyGrid";
+import HelpGrid from "./HelpGrid/HelpGrid";
 
 const Input = ({ fieldid }) => {
   const field = useSelector((state) => state.webConfig.config?.find((f) => f.fieldid === fieldid));
@@ -40,7 +41,7 @@ const Input = ({ fieldid }) => {
             renderField[controltype]
           )}
           {displayhelpobject && (
-            <button onClick={() => setShowGrid(true)} className="p-1 border rounded hover:bg-gray-100 cursor-pointer">
+            <button onClick={() => setShowGrid(!showGrid ? true : false)} className="p-1 border rounded hover:bg-gray-100 cursor-pointer">
               <Search size={16} />
             </button>
           )}
@@ -51,10 +52,10 @@ const Input = ({ fieldid }) => {
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-sm font-bold">Search Results</h2>
             <button className="text-red-500 text-xs font-semibold cursor-pointer" onClick={() => setShowGrid(false)}>
-              Close 
+              Close
             </button>
           </div>
-          <MyGrid />
+          <HelpGrid />
         </div>
       )}
     </>
