@@ -9,12 +9,19 @@ const ScreenGrid = () => {
   const [menu, setMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
+  const SearchHeader = ({ label, helpobject }) => (
+    <div className="w-full flex items-center justify-between">
+      <span>{label}</span>
+      {helpobject !== "" && <Search size={16} className="cursor-pointer"/>}
+    </div>
+  );
   const columnDefs = gridHeader.map((header) => ({
     headerName: header.label,
     field: header.fieldid,
     editable: true,
-    hide: !(header.linedetailgroupboxno === "" || header.visible === true ) || header.fieldid === "opercol",
+    hide: !(header.linedetailgroupboxno === "" || header.visible === true) || header.fieldid === "opercol",
     minWidth: header.controlwidth,
+    headerComponent: () => <SearchHeader label={header.label} helpobject={header.helpobject} />,
     cellDataType:
       header.applicationcontroltype === "TXT"
         ? "text"
