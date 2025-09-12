@@ -32,6 +32,7 @@ const HelpGrid = () => {
     floatingFilter: true,
     sortable: true,
     resizable: true,
+    editable:true
   }));
 
   return (

@@ -96017,6 +96017,7 @@ export const config = {
     UserDefaultParams: [],
   },
   Grids: [
+    // 0
     {
       Config: [
         {
@@ -97363,6 +97364,7 @@ export const config = {
       OpenDocument: [],
       Translation: [],
     },
+    // 1
     {
       Config: [
         {
@@ -97780,6 +97782,7 @@ export const config = {
       OpenDocument: [],
       Translation: [],
     },
+    // 2
     {
       Config: [
         {
@@ -99211,6 +99214,7 @@ export const config = {
       OpenDocument: [],
       Translation: [],
     },
+    // 3
     {
       Config: [
         {
@@ -99628,6 +99632,7 @@ export const config = {
       OpenDocument: [],
       Translation: [],
     },
+    // 4
     {
       Config: [
         {
@@ -99651,6 +99656,7 @@ export const config = {
         },
       ],
       Headers: [
+        // 0
         {
           flexobjectfields: "flexpurchasepodtlsaddressltxtPSPO",
           flexobject: "flexpurchasepodtls",
@@ -99694,6 +99700,7 @@ export const config = {
           forimportrequired: false,
           requiredindocumentstatus: false,
         },
+        // 1
         {
           flexobjectfields: "flexpurchasepodtlsaddressstxtPSPO",
           flexobject: "flexpurchasepodtls",
@@ -99737,6 +99744,7 @@ export const config = {
           forimportrequired: false,
           requiredindocumentstatus: false,
         },
+        // 2
         {
           flexobjectfields: "flexpurchasepodtlsassetgroupPSPO",
           flexobject: "flexpurchasepodtls",
@@ -101457,6 +101465,7 @@ export const config = {
           forimportrequired: false,
           requiredindocumentstatus: false,
         },
+        // Issue
         {
           flexobjectfields: "flexpurchasepodtlsfixedassettypenoPSPO",
           flexobject: "flexpurchasepodtls",
@@ -106194,6 +106203,7 @@ export const config = {
           forimportrequired: false,
           requiredindocumentstatus: false,
         },
+        // Issue
         {
           flexobjectfields: "flexpurchasepodtlslinestxtPSPO",
           flexobject: "flexpurchasepodtls",
