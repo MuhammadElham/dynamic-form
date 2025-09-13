@@ -1,11 +1,13 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { useSelector } from "react-redux";
-import { Search } from "lucide-react";
+import { Download, Search } from "lucide-react";
 import { Dropdown } from "antd";
 
 const ScreenGrid = () => {
   const gridHeader = useSelector((state) => state.webConfig.grids.Headers);
+  // value change it not rerender , presist the value
+  const gridRef = useRef();
 
   // For Icon
   const SearchHeader = ({ label, helpobject }) => (
@@ -14,6 +16,16 @@ const ScreenGrid = () => {
       {helpobject !== "" && <Search size={16} className="cursor-pointer" />}
     </div>
   );
+  // Context Menu
+  const handleCellContextMenu = (params) => {
+    setMenuPosition({ x: params.event.clientX, y: params.event.clientY });
+    setMenuVisible(true);
+  };
+  // Export to Excel
+  const onBtnExport = () =>
+    gridRef.current.api.exportDataAsCsv({
+      fileName: "grid-data.csv",
+    });
 
   const columnDefs = useMemo(() => {
     return gridHeader
@@ -54,18 +66,22 @@ const ScreenGrid = () => {
       { key: "deleterow", label: "Delete Row" },
       { key: "addattachment", label: "Add Attachment" },
       { key: "viewattachment", label: "View Attachment" },
+      { key: "exportdata", label: "Export Data", onClick: onBtnExport },
     ],
-  };
-
-  const handleCellContextMenu = (params) => {
-    setMenuPosition({ x: params.event.clientX, y: params.event.clientY });
-    setMenuVisible(true);
   };
 
   return (
     <div className="relative">
+      {/* Button */}
+      <button
+        onClick={onBtnExport}
+        className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 mb-4 text-sm font-medium cursor-pointer"
+      >
+        <Download size={16} />
+        <span>Export to Excel</span>
+      </button>
       <div className="ag-theme-alpine" style={{ height: 400 }} onContextMenu={(e) => e.preventDefault()}>
-        <AgGridReact columnDefs={columnDefs} rowData={rowData} singleClickEdit={true} onCellContextMenu={handleCellContextMenu} />
+        <AgGridReact ref={gridRef} columnDefs={columnDefs} rowData={rowData} singleClickEdit={true} onCellContextMenu={handleCellContextMenu} />
       </div>
       {/* Display Menu */}
       {menuVisible && (
