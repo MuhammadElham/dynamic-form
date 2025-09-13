@@ -2,12 +2,10 @@ import React, { useState, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { useSelector } from "react-redux";
 import { Search } from "lucide-react";
+import { Dropdown } from "antd";
 
 const ScreenGrid = () => {
   const gridHeader = useSelector((state) => state.webConfig.grids.Headers);
-
-  const [menu, setMenu] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
   // For Icon
   const SearchHeader = ({ label, helpobject }) => (
@@ -24,12 +22,8 @@ const ScreenGrid = () => {
       .map((header) => ({
         headerName: header.label,
         field: header.fieldid,
-        editable:true,
-        hide:
-          !header.visible ||
-          header.linedetailfieldposition !== 0 ||
-          header.linedetailgroupboxno !== "" ||
-          header.fieldid === "opercol",
+        editable: true,
+        hide: !header.visible || header.linedetailfieldposition !== 0 || header.linedetailgroupboxno !== "" || header.fieldid === "opercol",
         minWidth: parseInt(header.inputlength) || header.controlwidth,
         headerComponent: () => <SearchHeader label={header.label} helpobject={header.helpobject} />,
         cellDataType:
@@ -46,42 +40,53 @@ const ScreenGrid = () => {
             : "text",
       }));
   }, [gridHeader]);
-
+  // Row
   const rowData = useMemo(() => Array.from({ length: 30 }, () => ({})), []);
 
-  const menuItem = [
-    { key: 0, label: "Add Row" },
-    { key: 1, label: "Duplicate Row" },
-    { key: 2, label: "Delete Row" },
-    { key: 3, label: "Add Attachment" },
-    { key: 4, label: "View Attachment" },
-  ];
+  // Menu
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
-  const handleCellClick = (params) => {
-    const x = params.event.clientX;
-    const y = params.event.clientY;
-    setMenuPosition({ x, y });
-    setMenu(true);
+  const menu = {
+    items: [
+      { key: "addrow", label: "Add Row" },
+      { key: "duplicaterow", label: "Duplicate Row" },
+      { key: "deleterow", label: "Delete Row" },
+      { key: "addattachment", label: "Add Attachment" },
+      { key: "viewattachment", label: "View Attachment" },
+    ],
+  };
+
+  const handleCellContextMenu = (params) => {
+    setMenuPosition({ x: params.event.clientX, y: params.event.clientY });
+    setMenuVisible(true);
   };
 
   return (
     <div className="relative">
-      <div className="ag-theme-alpine" style={{ height: 400 }}>
-        <AgGridReact columnDefs={columnDefs} rowData={rowData} onCellClicked={handleCellClick} singleClickEdit={true} />
+      <div className="ag-theme-alpine" style={{ height: 400 }} onContextMenu={(e) => e.preventDefault()}>
+        <AgGridReact columnDefs={columnDefs} rowData={rowData} singleClickEdit={true} onCellContextMenu={handleCellContextMenu} />
       </div>
       {/* Display Menu */}
-      {/* {menu && (
-        <ul
-          style={{ top: menuPosition.y, left: menuPosition.x, position: "fixed" }}
-          className="bg-white shadow-md rounded-sm border border-gray-400 text-xs font-semibold text-gray-700 z-[1000]"
+      {menuVisible && (
+        <div
+          style={{
+            position: "fixed",
+            top: menuPosition.y,
+            left: menuPosition.x,
+            zIndex: 1000,
+            borderRadius: "4px", // less rounded
+            width: "180px", // increase width
+            overflow: "hidden",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+          }}
         >
-          {menuItem.map((item) => (
-            <li key={item.key} className="px-4 py-2 hover:bg-gray-100 cursor-pointer" onClick={() => setMenu(false)}>
-              {item.label}
-            </li>
-          ))}
-        </ul>
-      )} */}
+          <Dropdown menu={menu} open={true} trigger={[]} onOpenChange={() => setMenuVisible(false)}>
+            {/* aik child ka hona lazmi he */}
+            <div />
+          </Dropdown>
+        </div>
+      )}
     </div>
   );
 };
