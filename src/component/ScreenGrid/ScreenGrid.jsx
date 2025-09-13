@@ -24,9 +24,13 @@ const ScreenGrid = () => {
       .map((header) => ({
         headerName: header.label,
         field: header.fieldid,
-        editable: true,
-        hide: !(header.linedetailgroupboxno === "" || header.visible === true) || header.fieldid === "opercol",
-        minWidth: header.controlwidth,
+        editable:true,
+        hide:
+          !header.visible ||
+          header.linedetailfieldposition !== 0 ||
+          header.linedetailgroupboxno !== "" ||
+          header.fieldid === "opercol",
+        minWidth: parseInt(header.inputlength) || header.controlwidth,
         headerComponent: () => <SearchHeader label={header.label} helpobject={header.helpobject} />,
         cellDataType:
           header.applicationcontroltype === "TXT"
