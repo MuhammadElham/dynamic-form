@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { useSelector } from "react-redux";
 import { Search } from "lucide-react";
@@ -9,88 +9,41 @@ const ScreenGrid = () => {
   const [menu, setMenu] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
+  // For Icon
   const SearchHeader = ({ label, helpobject }) => (
     <div className="w-full flex items-center justify-between">
       <span>{label}</span>
-      {helpobject !== "" && <Search size={16} className="cursor-pointer"/>}
+      {helpobject !== "" && <Search size={16} className="cursor-pointer" />}
     </div>
   );
-  const columnDefs = gridHeader.map((header) => ({
-    headerName: header.label,
-    field: header.fieldid,
-    editable: true,
-    hide: !(header.linedetailgroupboxno === "" || header.visible === true) || header.fieldid === "opercol",
-    minWidth: header.controlwidth,
-    headerComponent: () => <SearchHeader label={header.label} helpobject={header.helpobject} />,
-    cellDataType:
-      header.applicationcontroltype === "TXT"
-        ? "text"
-        : header.applicationcontroltype === "AMT" || header.applicationcontroltype === "PRI"
-        ? "number"
-        : header.applicationcontroltype === "CHK"
-        ? "boolean"
-        : header.applicationcontroltype === "DTE"
-        ? "date"
-        : header.applicationcontroltype === "TME"
-        ? "dateTime"
-        : "text",
-  }));
 
-  // ---- Other ----
-  // fieldid: item?.fieldid,
-  // flexobject: item?.flexobject,
-  // label: item?.label,
-  // headerName: item.label,
-  // ...(item.helpobject !== "" && {
-  //   headerComponent: (params) => {
-  //     return (
-  //       <p
-  //         className="font-R-SemiBold font-xs "
-  //         style={{
-  //           width: "100%",
-  //           fontSize: "12.2px",
-  //           display: "flex",
-  //           flexDirection: "row",
-  //           justifyContent: "space-between",
-  //           alignItems: "center",
-  //         }}
-  //       >
-  //         {params.displayName}
-  //         <span>
-  //           <Search size={16} />
-  //         </span>
-  //       </p>
-  //     );
-  //   },
-  // }),
-  // inputlength: item?.inputlength,
-  // columnposition: item?.columnposition,
-  // controltype: item?.controltype,
-  // controlwidth: item?.controlwidth,
-  // enable: item?.enable,
-  // helpobject: item?.helpobject,
-  // helpwhere: item?.helpwhere,
-  // linedetailfieldposition: item?.linedetailfieldposition,
-  // linedetailgroupboxno: item?.linedetailgroupboxno,
-  // visible: item?.visible,
-  // minWidth: parseInt(item.inputlength),
-  // filter: this?.props?.customGridConfig?.gridActions?.toggleFilter,
-  // floatingFilter: this?.props?.customGridConfig?.gridActions?.toggleFilter,
-  // hide: !item?.visible || item?.linedetailfieldposition !== 0 || item?.linedetailgroupboxno !== "" || (item.fieldid == "lineid" && true),
-  // ...(item.helobject !== "" && { onCellDoubleClicked: (event) => this.handleRowDoubleClicked(event, item, flexobject) }),
-  // cellEditor: item.editable ? "agTextCellEditor" : undefined,
-  // cellDataType:
-  //   item.controltype === "TXT"
-  //     ? "text"
-  //     : item.controltype === "AMT" || item.controltype === "PRI" || item.controltype === "NUM"
-  //     ? "number"
-  //     : item.controltype === "CHK"
-  //     ? "boolean"
-  //     : item.controltype === "DTE"
-  //     ? "dateString"
-  //     : "text",
+  const columnDefs = useMemo(() => {
+    return gridHeader
+      .slice()
+      .sort((a, b) => a.columnposition - b.columnposition)
+      .map((header) => ({
+        headerName: header.label,
+        field: header.fieldid,
+        editable: true,
+        hide: !(header.linedetailgroupboxno === "" || header.visible === true) || header.fieldid === "opercol",
+        minWidth: header.controlwidth,
+        headerComponent: () => <SearchHeader label={header.label} helpobject={header.helpobject} />,
+        cellDataType:
+          header.applicationcontroltype === "TXT"
+            ? "text"
+            : header.applicationcontroltype === "AMT" || header.applicationcontroltype === "PRI"
+            ? "number"
+            : header.applicationcontroltype === "CHK"
+            ? "boolean"
+            : header.applicationcontroltype === "DTE"
+            ? "date"
+            : header.applicationcontroltype === "TME"
+            ? "dateTime"
+            : "text",
+      }));
+  }, [gridHeader]);
 
-  const rowData = Array.from({ length: 30 }, () => ({}));
+  const rowData = useMemo(() => Array.from({ length: 30 }, () => ({})), []);
 
   const menuItem = [
     { key: 0, label: "Add Row" },
@@ -110,7 +63,7 @@ const ScreenGrid = () => {
   return (
     <div className="relative">
       <div className="ag-theme-alpine" style={{ height: 400 }}>
-        <AgGridReact columnDefs={columnDefs} rowData={rowData} onCellClicked={handleCellClick} />
+        <AgGridReact columnDefs={columnDefs} rowData={rowData} onCellClicked={handleCellClick} singleClickEdit={true} />
       </div>
       {/* Display Menu */}
       {/* {menu && (
