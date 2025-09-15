@@ -3,9 +3,18 @@ import { AgGridReact } from "ag-grid-react";
 import { useSelector } from "react-redux";
 import { Download, Search } from "lucide-react";
 import { Dropdown } from "antd";
+import _ from "lodash";
 
 const ScreenGrid = () => {
   const gridHeader = useSelector((state) => state.webConfig.grids.Headers);
+  console.log("Grid Header = ",gridHeader);
+  
+  const lineDetailFieldConfig = _(gridHeader)
+    .filter((item) => !item.linedetailgroupboxno == "")
+    .groupBy("linedetailgroupboxno").value();
+    // console.log(lineDetailFieldConfig);
+    
+
   // value change it not rerender , presist the value
   const gridRef = useRef();
 
@@ -78,7 +87,7 @@ const ScreenGrid = () => {
         className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 mb-4 text-sm font-medium cursor-pointer"
       >
         <Download size={16} />
-        <span>Export to Excel</span>
+        <span>Export to CSV</span>
       </button>
       <div className="ag-theme-alpine" style={{ height: 400 }} onContextMenu={(e) => e.preventDefault()}>
         <AgGridReact ref={gridRef} columnDefs={columnDefs} rowData={rowData} singleClickEdit={true} onCellContextMenu={handleCellContextMenu} />

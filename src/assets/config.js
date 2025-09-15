@@ -106480,7 +106480,7 @@ export const config = {
           helpwhere: "",
           label: "Tax Lines",
           helpobject: "",
-          visible: false,
+          visible: true, // Chnag
           enable: false,
           movable: false,
           ismandatory: false,
@@ -108230,6 +108230,7 @@ export const config = {
       OpenDocument: [],
       Translation: [],
     },
+    // 
     {
       Config: [
         {
