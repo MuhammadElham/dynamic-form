@@ -1,41 +1,53 @@
 import React, { useState, useMemo, useRef } from "react";
 import { AgGridReact } from "ag-grid-react";
+import ContextMenu from "./ContextMenu";
+import Button from "./Button";
 import { useSelector } from "react-redux";
-import { Download, Search } from "lucide-react";
-import { Dropdown } from "antd";
+import { Download, Search, Blocks } from "lucide-react";
 import _ from "lodash";
 
 const ScreenGrid = () => {
   const gridHeader = useSelector((state) => state.webConfig.grids.Headers);
-  console.log("Grid Header = ",gridHeader);
-  
+  // Menu State
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const gridRef = useRef();
+  // Tabs State
+  const [showTabs, setShowTabs] = useState(false);
+  const [selectedRow, setSelectedRow] = useState(null);
+
+  // Condition for linedetailfieldconfig
   const lineDetailFieldConfig = _(gridHeader)
     .filter((item) => !item.linedetailgroupboxno == "")
-    .groupBy("linedetailgroupboxno").value();
-    // console.log(lineDetailFieldConfig);
-    
+    .groupBy("linedetailgroupboxno")
+    .value();
+  console.log("LineDetailFieldConfig = ", lineDetailFieldConfig);
 
-  // value change it not rerender , presist the value
-  const gridRef = useRef();
-
-  // For Icon
+  // Search Icon (Function)
   const SearchHeader = ({ label, helpobject }) => (
     <div className="w-full flex items-center justify-between">
       <span>{label}</span>
       {helpobject !== "" && <Search size={16} className="cursor-pointer" />}
     </div>
   );
-  // Context Menu
+  // Context Menu (Function)
   const handleCellContextMenu = (params) => {
     setMenuPosition({ x: params.event.clientX, y: params.event.clientY });
     setMenuVisible(true);
   };
-  // Export to Excel
-  const onBtnExport = () =>
+  // Buttons (Function)
+  const handleBtnExport = () =>
     gridRef.current.api.exportDataAsCsv({
       fileName: "grid-data.csv",
     });
-
+  const handleBtnSuggestion = () => {
+    if (selectedRow) {
+      setShowTabs(true);
+    } else {
+      alert("Please select a row first!");
+    }
+  };
+  // Coloumn
   const columnDefs = useMemo(() => {
     return gridHeader
       .slice()
@@ -64,54 +76,27 @@ const ScreenGrid = () => {
   // Row
   const rowData = useMemo(() => Array.from({ length: 30 }, () => ({})), []);
 
-  // Menu
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-
-  const menu = {
-    items: [
-      { key: "addrow", label: "Add Row" },
-      { key: "duplicaterow", label: "Duplicate Row" },
-      { key: "deleterow", label: "Delete Row" },
-      { key: "addattachment", label: "Add Attachment" },
-      { key: "viewattachment", label: "View Attachment" },
-      { key: "exportdata", label: "Export Data", onClick: onBtnExport },
-    ],
-  };
-
   return (
     <div className="relative">
-      {/* Button */}
-      <button
-        onClick={onBtnExport}
-        className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded hover:bg-gray-50 mb-4 text-sm font-medium cursor-pointer"
-      >
-        <Download size={16} />
-        <span>Export to CSV</span>
-      </button>
-      <div className="ag-theme-alpine" style={{ height: 400 }} onContextMenu={(e) => e.preventDefault()}>
-        <AgGridReact ref={gridRef} columnDefs={columnDefs} rowData={rowData} singleClickEdit={true} onCellContextMenu={handleCellContextMenu} />
+      {/* Export */}
+      <div className="flex items-center gap-2">
+        <Button onClick={handleBtnExport} Icon={Download} text="Export to CSV" />
+        <Button onClick={handleBtnSuggestion} Icon={Blocks} text="Suggestion" />
       </div>
-      {/* Display Menu */}
-      {menuVisible && (
-        <div
-          style={{
-            position: "fixed",
-            top: menuPosition.y,
-            left: menuPosition.x,
-            zIndex: 1000,
-            borderRadius: "4px", // less rounded
-            width: "180px", // increase width
-            overflow: "hidden",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
-          }}
-        >
-          <Dropdown menu={menu} open={true} trigger={[]} onOpenChange={() => setMenuVisible(false)}>
-            {/* aik child ka hona lazmi he */}
-            <div />
-          </Dropdown>
-        </div>
-      )}
+      {/* Ag Grid */}
+      <div className="ag-theme-alpine" style={{ height: 400 }} onContextMenu={(e) => e.preventDefault()}>
+        <AgGridReact
+          ref={gridRef}
+          columnDefs={columnDefs}
+          rowData={rowData}
+          singleClickEdit={true}
+          onCellContextMenu={handleCellContextMenu}
+          rowSelection="single"
+          rowHeight={45}
+        />
+      </div>
+      {/* Context Menu */}
+      <ContextMenu menuVisible={menuVisible} menuPosition={menuPosition} setMenuVisible={setMenuVisible} handleBtnExport={handleBtnExport} />
     </div>
   );
 };
