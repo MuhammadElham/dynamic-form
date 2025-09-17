@@ -5,6 +5,7 @@ import Button from "./Button";
 import { useSelector } from "react-redux";
 import { Download, Search, Blocks } from "lucide-react";
 import _ from "lodash";
+import RenderTabs from "./RenderTabs";
 
 const ScreenGrid = () => {
   const gridHeader = useSelector((state) => state.webConfig.grids.Headers);
@@ -13,7 +14,8 @@ const ScreenGrid = () => {
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const gridRef = useRef();
   // Tabs State
-  const [showTabs, setShowTabs] = useState(false);
+  const [showTabs, setShowTabs] = useState(true);
+  const [selectedRowData, setSelectedRowData] = useState({});
   const [selectedRow, setSelectedRow] = useState(null);
 
   // Condition for linedetailfieldconfig
@@ -21,8 +23,6 @@ const ScreenGrid = () => {
     .filter((item) => !item.linedetailgroupboxno == "")
     .groupBy("linedetailgroupboxno")
     .value();
-  console.log("LineDetailFieldConfig = ", lineDetailFieldConfig);
-
   // Search Icon (Function)
   const SearchHeader = ({ label, helpobject }) => (
     <div className="w-full flex items-center justify-between">
@@ -95,6 +95,38 @@ const ScreenGrid = () => {
           rowHeight={45}
         />
       </div>
+      {/* Line Details */}
+      {showTabs && (
+        <div className="mt-4 border border-gray-300">
+          {/* Heading */}
+          <div className="flex items-center justify-between p-3 bg-gray-50 border-b border-b-gray-300 font-medium">
+            <h3>Line Details</h3>
+            <button onClick={() => setShowTabs(false)} className="cursor-pointer text-gray-500 hover:text-gray-700 text-xl">
+              x
+            </button>
+          </div>
+          {/* Fields */}
+            {Object.keys(lineDetailFieldConfig).length > 0 ? (
+              <RenderTabs lineDetailFieldConfig={lineDetailFieldConfig} />
+            ) : (
+              <p className="p-4">No detail field available</p>
+            )}
+          {/* Save & Cancel Button */}
+          <div className="flex justify-end gap-2 p-3 border-t border-t-gray-300 bg-gray-50">
+            <button className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-50 cursor-pointer" onClick={() => setShowTabs(false)}>
+              Cancel
+            </button>
+            <button
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 cursor-pointer"
+              onClick={() => {
+                console.log("Saved Data = ", selectedRowData), setShowTabs(false);
+              }}
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      )}
       {/* Context Menu */}
       <ContextMenu menuVisible={menuVisible} menuPosition={menuPosition} setMenuVisible={setMenuVisible} handleBtnExport={handleBtnExport} />
     </div>

@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Search } from "lucide-react";
 
-
 const Input = ({ fieldid }) => {
-  const field = useSelector((state) => state.webConfig.config?.find((f) => f.fieldid === fieldid));
+  const fieldFromConfig = useSelector((state) => state.webConfig.config?.find((f) => f.fieldid === fieldid));
+  const fieldFromHeader = useSelector((state) => state.webConfig.grids?.Headers?.find((f) => f.fieldid === fieldid));
 
+  const field = fieldFromHeader || fieldFromConfig;
   if (!field) return null;
   const { label, defaultvalue, controlwidth, disable, inputlength, controltype, displayhelpobject } = field;
   const finalWidth = controlwidth > 160 ? controlwidth : 160;

@@ -1,0 +1,37 @@
+import React, { useState } from "react";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import Box from "@mui/material/Box";
+import Input from "../Input";
+
+const RenderTabs = ({ lineDetailFieldConfig }) => {
+  const tabKeys = Object.keys(lineDetailFieldConfig);
+  const [activeTab, setActiveTab] = useState(tabKeys[0]);
+
+  const handleChange = (_, newValue) => setActiveTab(newValue);
+  return (
+    <Box style={{ width: "100%" }}>
+      <Tabs value={activeTab} onChange={handleChange} textColor="secondary" indicatorColor="secondary" aria-label="Dynamic Tabs">
+        {tabKeys.map((groupKey) => (
+          <Tab key={groupKey} value={groupKey} label={groupKey} />
+        ))}
+      </Tabs>
+      {/* Tab Pannels */}
+      <Box sx={{ my: 5, paddingLeft: "120px" }}>
+        {tabKeys.map((groupKey) =>
+          activeTab === groupKey ? (
+            <div key={groupKey}>
+              {lineDetailFieldConfig[groupKey].map((field, index) => (
+                <div key={field.fieldid || index}>
+                  <Input fieldid={field.fieldid} />
+                </div>
+              ))}
+            </div>
+          ) : null
+        )}
+      </Box>
+    </Box>
+  );
+};
+
+export default RenderTabs;
