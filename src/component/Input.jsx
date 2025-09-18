@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Search } from "lucide-react";
 
-const Input = ({ fieldid }) => {
+const Input = ({ fieldid, value, onChange }) => {
   const fieldFromConfig = useSelector((state) => state.webConfig.config?.find((f) => f.fieldid === fieldid));
   const fieldFromHeader = useSelector((state) => state.webConfig.grids?.Headers?.find((f) => f.fieldid === fieldid));
 
@@ -11,15 +11,27 @@ const Input = ({ fieldid }) => {
   const { label, defaultvalue, controlwidth, disable, inputlength, controltype, displayhelpobject } = field;
   const finalWidth = controlwidth > 160 ? controlwidth : 160;
 
+  // add
+  const isControlled = value !== undefined && onChange;
+  const inputValue = isControlled ? value : (defaultvalue || "");
+
   const commonProps = {
     id: fieldid,
     name: fieldid,
-    defaultValue: defaultvalue,
+    // defaultValue: defaultvalue,
     disabled: disable === 1,
     className: "border border-gray-500 px-[8px] py-[3px] text-sm rounded-sm",
     style: { width: finalWidth },
     readOnly: displayhelpobject ? true : false,
   };
+
+  // add
+  if (isControlled) {
+    commonProps.value = inputValue;
+    commonProps.onChange = (e) => onChange(e.target.value);
+  } else {
+    commonProps.defaultValue = inputValue;
+  }
 
   const renderField = {
     TXT: <input type="text" maxLength={inputlength} {...commonProps} />,

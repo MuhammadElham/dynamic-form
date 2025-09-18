@@ -4,11 +4,18 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Input from "../Input";
 
-const RenderTabs = ({ lineDetailFieldConfig }) => {
+const RenderTabs = ({ lineDetailFieldConfig, lineDetailData, onDataChange }) => {
   const tabKeys = Object.keys(lineDetailFieldConfig);
   const [activeTab, setActiveTab] = useState(tabKeys[0]);
 
   const handleChange = (_, newValue) => setActiveTab(newValue);
+  
+  const handleInputChange = (fieldId, value) => {
+    if (onDataChange) {
+      onDataChange(fieldId, value);
+    }
+  };
+
   return (
     <Box style={{ width: "100%" }}>
       <Tabs value={activeTab} onChange={handleChange} textColor="secondary" indicatorColor="secondary" aria-label="Dynamic Tabs">
@@ -23,7 +30,11 @@ const RenderTabs = ({ lineDetailFieldConfig }) => {
             <div key={groupKey}>
               {lineDetailFieldConfig[groupKey].map((field, index) => (
                 <div key={field.fieldid || index}>
-                  <Input fieldid={field.fieldid} />
+                  <Input
+                    fieldid={field.fieldid}
+                    value={lineDetailData[field.fieldid] || ""}
+                    onChange={(value) => handleInputChange(field.fieldid, value)}
+                  />
                 </div>
               ))}
             </div>
