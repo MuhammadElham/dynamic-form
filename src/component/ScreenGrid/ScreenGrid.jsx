@@ -113,47 +113,9 @@ const ScreenGrid = () => {
       [fieldId]: value,
     }));
 
-  // // Generate Line ID
-  // const generateLineIds = () => {
-  //   const existingIds = rowData.map((row) => parseInt(row.lineid)).filter((id) => !isNaN(id));
-  //   const maxId = existingIds.length > 0 ? Math.max(...existingIds) : 0;
-  //   return (maxId + 1).toString().padStart(3, "0");
-  // };
-
-  // //  Check row has already line id
-  // const checkAndGenerateLineId = (rowIndex, colField) => {
-  //   const currentRow = rowData[rowIndex];
-  //   // Col ka Obj nikalo
-  //   const columnObj = gridHeader.find((col) => col.fieldid == colField);
-
-  //   if (!columnObj?.ismandatory) {
-  //     console.warn(`Line ID not generated: Column '${colField}' is not mandatory.`);
-  //     return currentRow.lineid;
-  //   }
-  //   // lineId check
-  //   if (currentRow.lineid) {
-  //     return currentRow.lineid;
-  //   } else {
-  //     const newLineId = generateLineIds();
-
-  //     // Update RowData with NewLineID
-  //     setRowData((prevRowData) => {
-  //       const newRowData = [...prevRowData];
-  //       newRowData[rowIndex] = {
-  //         ...newRowData[rowIndex],
-  //         lineid: newLineId,
-  //       };
-  //       return newRowData;
-  //     });
-  //     return newLineId;
-  //   }
-  // };
-
-  // handle cell clicked
   // handle cell clicked
   const handleCellClick = (params) => {
-    console.log("Cell clicked:", params.rowIndex, params.colDef.field);
-
+  
     // Step:1 Check if current row already has Line ID
     const currentRow = rowData[params.rowIndex];
     if (currentRow.lineid) {
@@ -204,8 +166,6 @@ const ScreenGrid = () => {
   };
   // Step:6 Add cell value
   const handleCellValueChanged = (params) => {
-    console.log("Cell value changed:", params.rowIndex, params.colDef.field);
-
     // Check if current row already has Line ID
     const currentRow = rowData[params.rowIndex];
     if (currentRow.lineid) {
