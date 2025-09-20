@@ -31,6 +31,9 @@ const ScreenGrid = () => {
   // Row
   const [rowData, setRowData] = useState(() => Array.from({ length: 30 }, () => ({})));
 
+  // Editable
+  const [allColumnsEditable, setAllColumnsEditable] = useState(false);
+
   // Condition for linedetailfieldconfig
   const lineDetailFieldConfig = useMemo(() => {
     return _(gridHeaderRedux)
@@ -115,11 +118,9 @@ const ScreenGrid = () => {
 
   // handle cell clicked
   const handleCellClick = (params) => {
-  
     // Step:1 Check if current row already has Line ID
     const currentRow = rowData[params.rowIndex];
     if (currentRow.lineid) {
-      console.log("Row already has Line ID:", currentRow.lineid);
       setSelectedRow(params.node);
       setSelectedRowData(params.data);
       setSelectedRowIndex(params.rowIndex);
@@ -237,7 +238,15 @@ const ScreenGrid = () => {
         return {
           headerName: header.label,
           field: header.fieldid,
-          editable: true,
+          editable: (params) => {
+            if (allColumnsEditable) return true;
+            const columnObj = gridHeader.find((col) => col.fieldid == params.colDef.field);
+            if (columnObj?.ismandatory) {
+              setAllColumnsEditable(true);
+              return true;
+            }
+            return false;
+          },
           hide: !header.visible || header.linedetailfieldposition !== 0 || header.linedetailgroupboxno !== "" || header.fieldid === "opercol",
           minWidth: parseInt(header.inputlength) || header.controlwidth,
           headerComponent: () => <SearchHeader label={header.label} helpobject={header.helpobject} />,
@@ -254,7 +263,7 @@ const ScreenGrid = () => {
           cellEditor: isTimeField ? CustomTimeField : undefined,
         };
       });
-  }, [gridHeader]);
+  }, [gridHeader, rowData]);
 
   return (
     <div className="relative">
