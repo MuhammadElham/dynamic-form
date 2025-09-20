@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import { config } from "../assets/config.js";
 
 const initialState = {
-  config: config.Fields.Config,
+  fieldConfig: config.Fields.Config,          
+  fieldHeaders: config.Grids[4]?.Headers,      
   translation: config.Fields.ControlTranslations,
   grids: config.Grids[4],
 };
@@ -12,7 +13,8 @@ const webConfigSlice = createSlice({
   initialState,
   reducers: {
     setConfig: (state, action) => {
-      state.config = action.payload.config;
+      state.fieldConfig = action.payload.config;       
+      state.fieldHeaders = action.payload.grids?.Headers; 
       state.translation = action.payload.translations;
       state.grids = action.payload.grids;
     },

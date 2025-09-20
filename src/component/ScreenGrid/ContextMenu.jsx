@@ -1,13 +1,13 @@
 import React from "react";
 import { Dropdown } from "antd";
 
-const ContextMenu = ({ menuVisible, menuPosition, setMenuVisible, handleBtnExport }) => {
+const ContextMenu = ({ menuVisible, menuPosition, setMenuVisible, handleBtnExport, handleMenuClick }) => {
   // Menu Dataset
   const menu = {
     items: [
-      { key: "addrow", label: "Add Row" },
-      { key: "duplicaterow", label: "Duplicate Row" },
-      { key: "deleterow", label: "Delete Row" },
+      { key: "addrow", label: "Add Row", onClick: () => handleMenuClick("addrow") },
+      { key: "duplicaterow", label: "Duplicate Row", onClick: () => handleMenuClick("duplicaterow") },
+      { key: "deleterow", label: "Delete Row", onClick: () => handleMenuClick("deleterow") },
       { key: "addattachment", label: "Add Attachment" },
       { key: "viewattachment", label: "View Attachment" },
       { key: "exportdata", label: "Export Data", onClick: handleBtnExport },

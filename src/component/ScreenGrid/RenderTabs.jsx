@@ -28,7 +28,7 @@ const RenderTabs = ({ lineDetailFieldConfig, lineDetailData, onDataChange }) => 
         {tabKeys.map((groupKey) =>
           activeTab === groupKey ? (
             <div key={groupKey}>
-              {lineDetailFieldConfig[groupKey].map((field, index) => (
+              {lineDetailFieldConfig[groupKey].map((field, index) => (                
                 <div key={field.fieldid || index}>
                   <Input
                     fieldid={field.fieldid}

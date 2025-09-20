@@ -2,6 +2,7 @@ import React, { useState, useMemo, useRef } from "react";
 import { AgGridReact } from "ag-grid-react";
 import ContextMenu from "./ContextMenu";
 import Button from "./Button";
+import CustomTimeField from "./CustomTimeField";
 import { useSelector } from "react-redux";
 import { Download, Search, Blocks } from "lucide-react";
 import _ from "lodash";
@@ -58,17 +59,7 @@ const ScreenGrid = () => {
       fileName: "grid-data.csv",
     });
 
-  // Suggesion Buttons (Function)
   const handleBtnSuggestion = () => {
-    // Checking Prev Row is empty or not
-    if (selectedRowIndex > 0) {
-      const prevRow = rowData[selectedRowIndex - 1];
-      const isPrevRowEmpty = Object.keys(prevRow).every((val) => val == "" || val == undefined || val == null);
-      if (isPrevRowEmpty) {
-        alert("Previous row is empty! Please fill it before saving this row.");
-        return;
-      }
-    }
     if (selectedRow) {
       setShowTabs(true);
       // Cleaning the Field Data
@@ -95,24 +86,6 @@ const ScreenGrid = () => {
   // Handle Save (Function)
   const handleSave = () => {
     if (selectedRowIndex !== null) {
-      // Update grid header to make hidden columns visible
-      setGridHeader((prev) => {
-        const updatedHeader = prev.map((header) => {
-          const hasLineDetailData = lineDetailData[header.fieldid] && lineDetailData[header.fieldid] !== "";
-
-          if (hasLineDetailData) {
-            return {
-              ...header,
-              visible: true,
-              linedetailfieldposition: 0,
-              linedetailgroupboxno: "",
-            };
-          }
-          return header;
-        });
-        return updatedHeader;
-      });
-
       // Update row data with line detail data
       setRowData((prevRowData) => {
         const updatedRowData = [...prevRowData];
@@ -120,6 +93,8 @@ const ScreenGrid = () => {
           ...updatedRowData[selectedRowIndex],
           ...lineDetailData,
         };
+        console.log("Row data after save:", updatedRowData[selectedRowIndex]);
+
         return updatedRowData;
       });
 
@@ -131,38 +106,194 @@ const ScreenGrid = () => {
     }
   };
 
-  // handle linedetail (not compulsory)
+  // handle linedetail
   const handleLineDetailDataChange = (fieldId, value) =>
     setLineDetailData((prev) => ({
       ...prev,
       [fieldId]: value,
     }));
 
+  // // Generate Line ID
+  // const generateLineIds = () => {
+  //   const existingIds = rowData.map((row) => parseInt(row.lineid)).filter((id) => !isNaN(id));
+  //   const maxId = existingIds.length > 0 ? Math.max(...existingIds) : 0;
+  //   return (maxId + 1).toString().padStart(3, "0");
+  // };
+
+  // //  Check row has already line id
+  // const checkAndGenerateLineId = (rowIndex, colField) => {
+  //   const currentRow = rowData[rowIndex];
+  //   // Col ka Obj nikalo
+  //   const columnObj = gridHeader.find((col) => col.fieldid == colField);
+
+  //   if (!columnObj?.ismandatory) {
+  //     console.warn(`Line ID not generated: Column '${colField}' is not mandatory.`);
+  //     return currentRow.lineid;
+  //   }
+  //   // lineId check
+  //   if (currentRow.lineid) {
+  //     return currentRow.lineid;
+  //   } else {
+  //     const newLineId = generateLineIds();
+
+  //     // Update RowData with NewLineID
+  //     setRowData((prevRowData) => {
+  //       const newRowData = [...prevRowData];
+  //       newRowData[rowIndex] = {
+  //         ...newRowData[rowIndex],
+  //         lineid: newLineId,
+  //       };
+  //       return newRowData;
+  //     });
+  //     return newLineId;
+  //   }
+  // };
+
+  // handle cell clicked
+  // handle cell clicked
+  const handleCellClick = (params) => {
+    console.log("Cell clicked:", params.rowIndex, params.colDef.field);
+
+    // Step:1 Check if current row already has Line ID
+    const currentRow = rowData[params.rowIndex];
+    if (currentRow.lineid) {
+      console.log("Row already has Line ID:", currentRow.lineid);
+      setSelectedRow(params.node);
+      setSelectedRowData(params.data);
+      setSelectedRowIndex(params.rowIndex);
+      return;
+    }
+
+    // Step:2 Check if column is mandatory (only if no Line ID)
+    const columnObj = gridHeader.find((col) => col.fieldid == params.colDef.field);
+    if (!columnObj?.ismandatory) {
+      alert("Line ID cannot be generated because this column is not mandatory!");
+      return;
+    }
+
+    // Step:3 Check previous row is empty
+    if (params.rowIndex > 0) {
+      const prevRow = rowData[params.rowIndex - 1];
+      const isPrevRowEmpty = Object.keys(prevRow).every((val) => val === "" || val === undefined || val === null);
+
+      if (isPrevRowEmpty) {
+        alert("Previous row is empty! Please fill it before moving to this row.");
+        return;
+      }
+    }
+
+    // Step:4 Generate new LineID
+    const existingIds = rowData.map((row) => parseInt(row.lineid)).filter((id) => !isNaN(id));
+    const maxId = existingIds.length > 0 ? Math.max(...existingIds) : 0;
+    const lineId = (maxId + 1).toString().padStart(3, "0");
+
+    // Step:5 Update rowData with new line ID
+    setRowData((prevRowData) => {
+      const newRowData = [...prevRowData];
+      newRowData[params.rowIndex] = {
+        ...newRowData[params.rowIndex],
+        lineid: lineId,
+      };
+      return newRowData;
+    });
+
+    // Step:6 Set the Selected RowData
+    setSelectedRow(params.node);
+    setSelectedRowData({ ...params.data, lineId });
+    setSelectedRowIndex(params.rowIndex);
+  };
+  // Step:6 Add cell value
+  const handleCellValueChanged = (params) => {
+    console.log("Cell value changed:", params.rowIndex, params.colDef.field);
+
+    // Check if current row already has Line ID
+    const currentRow = rowData[params.rowIndex];
+    if (currentRow.lineid) {
+      return;
+    }
+
+    // Only validate if no Line ID exists
+    const columnObj = gridHeader.find((col) => col.fieldid == params.colDef.field);
+    if (!columnObj?.ismandatory) {
+      alert("Line ID cannot be generated because this column is not mandatory!");
+      params.node.setDataValue(params.colDef.field, params.oldValue || "");
+      return;
+    }
+
+    if (params.rowIndex > 0) {
+      const prevRow = rowData[params.rowIndex - 1];
+      const isPrevRowEmpty = Object.keys(prevRow).every((val) => val === "" || val === undefined || val === null);
+
+      if (isPrevRowEmpty) {
+        alert("Previous row is empty! Please fill it before moving to this row.");
+        params.node.setDataValue(params.colDef.field, params.oldValue || "");
+        return;
+      }
+    }
+  };
+
+  // menu click
+  const handleMenuClick = (action) => {
+    setMenuVisible(false);
+    if (action == "duplicaterow") {
+      duplicateSelectedRow();
+    } else if (action == "deleterow") {
+      deleteSelectedRow();
+    }
+  };
+
+  // Duplicate Row - Fixed Version
+  const duplicateSelectedRow = () => {
+    setRowData((prevData) => {
+      const currentRow = prevData[selectedRowIndex];
+      if (!currentRow?.lineid || currentRow.lineid.trim() === "") {
+        alert("Cannot duplicate this row because it doesn't have Line ID");
+        return prevData;
+      }
+
+      const newData = [...prevData];
+      const rowToDuplicate = { ...newData[selectedRowIndex] };
+
+      // Generate next line ID
+      const existingIds = newData.map((row) => parseInt(row.lineid)).filter((id) => !isNaN(id));
+      const maxId = existingIds.length > 0 ? Math.max(...existingIds) : 0;
+      rowToDuplicate.lineid = (maxId + 1).toString().padStart(3, "0");
+
+      newData.splice(selectedRowIndex + 1, 0, rowToDuplicate);
+      return newData;
+    });
+  };
+  // Delete Row
+  const deleteSelectedRow = () => {
+    setRowData((prevData) => prevData.filter((_, idx) => idx !== selectedRowIndex));
+  };
   // Coloumn
   const columnDefs = useMemo(() => {
     return gridHeader
       .slice()
       .sort((a, b) => a.columnposition - b.columnposition)
-      .map((header) => ({
-        headerName: header.label,
-        field: header.fieldid,
-        editable: true,
-        hide: !header.visible || header.linedetailfieldposition !== 0 || header.linedetailgroupboxno !== "" || header.fieldid === "opercol",
-        minWidth: parseInt(header.inputlength) || header.controlwidth,
-        headerComponent: () => <SearchHeader label={header.label} helpobject={header.helpobject} />,
-        cellDataType:
-          header.applicationcontroltype === "TXT"
-            ? "text"
-            : header.applicationcontroltype === "AMT" || header.applicationcontroltype === "PRI"
-            ? "number"
-            : header.applicationcontroltype === "CHK"
-            ? "boolean"
-            : header.applicationcontroltype === "DTE"
-            ? "date"
-            : header.applicationcontroltype === "TME"
-            ? "dateTime"
-            : "text",
-      }));
+      .map((header) => {
+        const isTimeField = header.applicationcontroltype == "TME";
+        return {
+          headerName: header.label,
+          field: header.fieldid,
+          editable: true,
+          hide: !header.visible || header.linedetailfieldposition !== 0 || header.linedetailgroupboxno !== "" || header.fieldid === "opercol",
+          minWidth: parseInt(header.inputlength) || header.controlwidth,
+          headerComponent: () => <SearchHeader label={header.label} helpobject={header.helpobject} />,
+          cellDataType:
+            header.applicationcontroltype === "TXT"
+              ? "text"
+              : header.applicationcontroltype === "AMT" || header.applicationcontroltype === "PRI"
+              ? "number"
+              : header.applicationcontroltype === "CHK"
+              ? "boolean"
+              : header.applicationcontroltype === "DTE"
+              ? "date"
+              : "text",
+          cellEditor: isTimeField ? CustomTimeField : undefined,
+        };
+      });
   }, [gridHeader]);
 
   return (
@@ -180,8 +311,9 @@ const ScreenGrid = () => {
           rowData={rowData}
           singleClickEdit={true}
           onCellContextMenu={handleCellContextMenu}
+          onCellClicked={handleCellClick}
+          onCellValueChanged={handleCellValueChanged}
           onRowClicked={handleRowClick}
-          rowSelection={{ mode: "singleRow" }}
           rowHeight={45}
         />
       </div>
@@ -213,7 +345,13 @@ const ScreenGrid = () => {
         </div>
       )}
       {/* Context Menu */}
-      <ContextMenu menuVisible={menuVisible} menuPosition={menuPosition} setMenuVisible={setMenuVisible} handleBtnExport={handleBtnExport} />
+      <ContextMenu
+        menuVisible={menuVisible}
+        menuPosition={menuPosition}
+        setMenuVisible={setMenuVisible}
+        handleBtnExport={handleBtnExport}
+        handleMenuClick={handleMenuClick}
+      />
     </div>
   );
 };
