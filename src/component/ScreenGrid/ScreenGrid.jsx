@@ -7,6 +7,7 @@ import { useSelector } from "react-redux";
 import { Download, Search, Blocks } from "lucide-react";
 import _ from "lodash";
 import RenderTabs from "./RenderTabs";
+import Drawer from "../Drawer/Drawer";
 
 const ScreenGrid = () => {
   const gridHeaderRedux = useSelector((state) => state.webConfig.grids.Headers);
@@ -33,6 +34,9 @@ const ScreenGrid = () => {
 
   // Editable
   const [allColumnsEditable, setAllColumnsEditable] = useState(false);
+
+  // Open and Close
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Condition for linedetailfieldconfig
   const lineDetailFieldConfig = useMemo(() => {
@@ -228,6 +232,16 @@ const ScreenGrid = () => {
   const deleteSelectedRow = () => {
     setRowData((prevData) => prevData.filter((_, idx) => idx !== selectedRowIndex));
   };
+  // Open Drawer
+  const handleCellDoubleClicked = () => {
+    setIsDrawerOpen(true);
+  };
+
+  // Close Drawer
+  const closeDrawer = () => {
+    setIsDrawerOpen(false);
+  };
+
   // Coloumn
   const columnDefs = useMemo(() => {
     return gridHeader
@@ -283,6 +297,7 @@ const ScreenGrid = () => {
           onCellClicked={handleCellClick}
           onCellValueChanged={handleCellValueChanged}
           onRowClicked={handleRowClick}
+          onCellDoubleClicked={handleCellDoubleClicked}
           rowHeight={45}
         />
       </div>
@@ -321,6 +336,8 @@ const ScreenGrid = () => {
         handleBtnExport={handleBtnExport}
         handleMenuClick={handleMenuClick}
       />
+      {/* Drawer */}
+      <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} />
     </div>
   );
 };
