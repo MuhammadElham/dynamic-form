@@ -36,13 +36,13 @@ const HelpGrid = () => {
   }));
 
   return (
-    <div className="ag-theme-alpine" style={{ height: 400, width: "100%" }}>
+    <div className="ag-theme-alpine" style={{ height: 550, width: "100%" }}>
       <AgGridReact
         rowData={rowData}
         columnDefs={columnDefs}
-        pagination={true}
-        paginationPageSize={5}
-        paginationPageSizeSelector={[5, 10]}
+        // pagination={true}
+        // paginationPageSize={5}
+        // paginationPageSizeSelector={[5, 10]}
         rowSelection={rowSelection}
       />
     </div>

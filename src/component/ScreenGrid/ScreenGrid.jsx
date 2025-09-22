@@ -36,7 +36,7 @@ const ScreenGrid = () => {
   const [allColumnsEditable, setAllColumnsEditable] = useState(false);
 
   // Open and Close
-  const [isDrawerOpen, setIsDrawerOpen] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Condition for linedetailfieldconfig
   const lineDetailFieldConfig = useMemo(() => {
