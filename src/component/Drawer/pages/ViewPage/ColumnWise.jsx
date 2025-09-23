@@ -21,7 +21,7 @@ const ColumnWise = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col ">
       {items.map(({ key, label }) => (
         <div key={key} className="flex items-center justify-between mb-3">
           <p className=" text-sm text-gray-400 font-semibold">{label}</p>
@@ -33,6 +33,10 @@ const ColumnWise = () => {
           </button>
         </div>
       ))}
+      <div className="flex items-center justify-end gap-5 mt-30">
+        <button className="px-5 py-1 text-sm border border-gray-400 outline-none text-gray-400 bg-gray-100 rounded">Clear All</button>
+        <button className="px-6 py-1.5 text-sm border outline-none text-white bg-blue-800 rounded">Load</button>
+      </div>
     </div>
   );
 };

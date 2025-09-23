@@ -109,7 +109,7 @@ const Drawer = ({ isOpen, onClose }) => {
                 </header>
 
                 {/* Content */}
-                <div className="flex-1 px-2 overflow-y-auto">{pages[activePage]}</div>
+                <div className="flex-1 px-2 overflow-hidden">{pages[activePage]}</div>
               </div>
             )}
 

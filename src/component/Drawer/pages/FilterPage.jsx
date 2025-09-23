@@ -12,8 +12,8 @@ const FilterPage = () => {
     { key: "date", type: "text", label: "Date" },
   ];
   return (
-    <div className="flex flex-col h-full justify-between mb-20 ">
-      <div className="flex flex-col items-start px-8">
+    <div className="flex flex-col h-full">
+      <div className="flex-1 px-8 overflow-y-auto">
         {inputField.map(({ key, type, label }) => (
           <div key={key} className="flex gap-5 items-center mb-2.5">
             <label htmlFor={key} className="text-sm font-medium text-gray-700 mb-1">
@@ -27,7 +27,7 @@ const FilterPage = () => {
           </div>
         ))}
       </div>
-      <div className="flex items-center justify-end gap-5 mr-7">
+      <div className="flex items-center justify-end gap-5 mr-7 mt-30">
         <button className="px-5 py-1 text-sm border border-gray-400 outline-none text-gray-400 bg-gray-100 rounded">Clear All</button>
         <button className="px-6 py-1.5 text-sm border outline-none text-white bg-blue-800 rounded">Load</button>
       </div>
