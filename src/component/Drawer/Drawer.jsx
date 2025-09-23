@@ -9,8 +9,8 @@ import SuggestionPage from "./pages/Suggestion/SuggestionPage";
 
 const Drawer = ({ isOpen, onClose }) => {
   const [showDrawer, setShowDrawer] = useState(isOpen);
-  const [activePage, setActivePage] = useState("view");
-  const [isIconDrawerOpen, setIconDrawerOpen] = useState(true);
+  const [activePage, setActivePage] = useState("");
+  const [isIconDrawerOpen, setIconDrawerOpen] = useState(false);
 
   const pages = {
     filter: <FilterPage />,
