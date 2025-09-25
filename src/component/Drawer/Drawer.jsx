@@ -60,7 +60,6 @@ const Drawer = ({ isOpen, onClose }) => {
           aria-modal="true"
           aria-labelledby="drawer-title"
         >
-          {/* Flexbox Container */}
           <div className="flex h-full">
             {/* Left Sidebar - Icons */}
             <aside className="w-20 bg-gray-50 border-r border-gray-200 flex flex-col items-center pt-5 flex-shrink-0">
@@ -85,7 +84,7 @@ const Drawer = ({ isOpen, onClose }) => {
               </nav>
             </aside>
 
-            {/* Second Drawer - Criteria */}
+            {/* Second Drawer*/}
             {isIconDrawerOpen && (
               <div className="w-1/5 bg-white shadow-2xl border-r border-gray-200 flex-shrink-0">
                 {/* Header */}

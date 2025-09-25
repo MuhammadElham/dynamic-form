@@ -1,21 +1,46 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Employee from "./Employee";
 import ResignedEmployee from "./ResignedEmployee";
+import { useSelector } from "react-redux";
 
 const SuggestionPage = () => {
-  const [activePage, setActivePage] = useState("employee");
+  const helpGridConfig = useSelector((state) => state.webConfig.helpGridConfig);
+  // console.log(helpGridConfig.LinkHelp.map((item) => console.log("Item = ",item) || []));
 
-  const page = { employee: <Employee />, resignedEmployee: <ResignedEmployee /> };
+  const [activePage, setActivePage] = useState("");
 
-  const menuItem = [
-    { key: "employee", text: "Employee" },
-    { key: "resignedEmployee", text: "Resigned Employee" },
-  ];
+  const tabs = useMemo(() => {
+    const mainTab = {
+      key: "mainTab",
+      text: helpGridConfig?.Grid?.Config[0].helpname,
+    };
+
+    const otherTab =
+      helpGridConfig?.LinkHelp?.map((item) => ({
+        key: item.linkhelpobject,
+        text: item.stxt,
+      })) || [];
+
+    return [mainTab, ...otherTab];
+  }, [helpGridConfig]);
+
+  useEffect(() => {
+    if (tabs.length > 0 && !activePage) {
+      setActivePage(tabs[0].key);
+    }
+  }, [tabs, activePage]);
+
+  // const page = { employee: <Employee />, resignedEmployee: <ResignedEmployee /> };
+
+  // const menuItem = [
+  //   { key: "employee", text: "Employee" },
+  //   { key: "resignedEmployee", text: "Resigned Employee" },
+  // ];
 
   return (
     <div>
       <div className="flex border-b-3 border-blue-800 bg-white gap-2">
-        {menuItem.map(({ key, text }) => (
+        {tabs.map(({ key, text }) => (
           <button
             key={key}
             onClick={() => setActivePage(key)}
@@ -28,7 +53,7 @@ const SuggestionPage = () => {
         ))}
       </div>
       {/* Content Page */}
-      <div className="mt-6">{page[activePage]}</div>
+      {/* <div className="mt-6">{page[activePage]}</div> */}
     </div>
   );
 };

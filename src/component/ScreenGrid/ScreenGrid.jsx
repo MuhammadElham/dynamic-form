@@ -56,6 +56,11 @@ const ScreenGrid = () => {
 
   // Context Menu (Function)
   const handleCellContextMenu = (params) => {
+    // add
+    setSelectedRow(params.node);
+    setSelectedRowData(params.data);
+    setSelectedRowIndex(params.rowIndex);
+
     setMenuPosition({ x: params.event.clientX, y: params.event.clientY });
     setMenuVisible(true);
   };
@@ -299,6 +304,8 @@ const ScreenGrid = () => {
           onRowClicked={handleRowClick}
           onCellDoubleClicked={handleCellDoubleClicked}
           rowHeight={45}
+          rowSelection="single"
+          suppressRowClickSelection={false}
         />
       </div>
       {/* Line Details */}
