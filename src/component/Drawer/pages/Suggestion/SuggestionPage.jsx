@@ -1,11 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
-import Employee from "./Employee";
-import ResignedEmployee from "./ResignedEmployee";
+import TabGrid from "../TabGrid/TabGrid";
 import { useSelector } from "react-redux";
 
-const SuggestionPage = () => {
+const SuggestionPage = ({onRowSelect}) => {
   const helpGridConfig = useSelector((state) => state.webConfig.helpGridConfig);
-  // console.log(helpGridConfig.LinkHelp.map((item) => console.log("Item = ",item) || []));
 
   const [activePage, setActivePage] = useState("");
 
@@ -30,13 +28,6 @@ const SuggestionPage = () => {
     }
   }, [tabs, activePage]);
 
-  // const page = { employee: <Employee />, resignedEmployee: <ResignedEmployee /> };
-
-  // const menuItem = [
-  //   { key: "employee", text: "Employee" },
-  //   { key: "resignedEmployee", text: "Resigned Employee" },
-  // ];
-
   return (
     <div>
       <div className="flex border-b-3 border-blue-800 bg-white gap-2">
@@ -53,7 +44,9 @@ const SuggestionPage = () => {
         ))}
       </div>
       {/* Content Page */}
-      {/* <div className="mt-6">{page[activePage]}</div> */}
+      <div className="mt-6">
+        <TabGrid activeTab={activePage} onRowDoubleClick={onRowSelect}/>
+      </div>
     </div>
   );
 };

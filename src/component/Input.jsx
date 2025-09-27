@@ -5,12 +5,16 @@ import { Search } from "lucide-react";
 const Input = ({ fieldid, value, onChange }) => {
   const fieldFromConfig = useSelector((state) => state.webConfig.fieldConfig?.find((f) => f.fieldid === fieldid));
   const fieldFromHeader = useSelector((state) => state.webConfig.fieldHeaders?.find((f) => f.fieldid === fieldid));
+  const fieldHelpGridConfig = useSelector((state) => state.webConfig.helpGridConfig?.Criteria?.find((f) => f.fieldid === fieldid));
 
   // Priority logic: Header first, then Config
   let field = null;
   let source = "";
 
-  if (fieldFromHeader) {
+  if (fieldHelpGridConfig && fieldHelpGridConfig.displayhelpobject) {
+    field = fieldHelpGridConfig;
+    source = "CRITERIA";
+  } else if (fieldFromHeader) {
     field = fieldFromHeader;
     source = "HEADER";
   } else if (fieldFromConfig) {

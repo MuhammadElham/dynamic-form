@@ -35,7 +35,7 @@ const ScreenGrid = () => {
   // Editable
   const [allColumnsEditable, setAllColumnsEditable] = useState(false);
 
-  // Open and Close
+  // Drawer
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Condition for linedetailfieldconfig
@@ -247,6 +247,92 @@ const ScreenGrid = () => {
     setIsDrawerOpen(false);
   };
 
+  //
+  const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
+    setIsDrawerOpen(false);
+
+    if (selectedRowIndex !== null) {
+      const config = selectedRowConfig[0];
+
+      let returnFields = [];
+      if (config.multireturn === true) {
+        returnFields = config.multireturncolumn.split(",").map((field) => field.trim());
+      } else {
+        returnFields = [config.singlereturncolumn];
+      }
+
+      console.log(
+        "Main grid headers fieldids:",
+        gridHeader.map((h) => h.fieldid)
+      );
+      console.log("Looking for fields:", returnFields);
+      console.log("Selected row data keys:", Object.keys(selectedRowData));
+
+      const dataToUpdate = {};
+
+      returnFields.forEach((field) => {
+        const mainGridColumn = gridHeader.find((header) => header.fieldid.toLowerCase() === field.toLowerCase());
+
+        const matchingKey = Object.keys(selectedRowData).find((key) => key.toLowerCase() === field.toLowerCase());
+
+        console.log(`Field '${field}':`, {
+          foundInMainGrid: !!mainGridColumn,
+          valueInSelectedData: matchingKey ? selectedRowData[matchingKey] : undefined,
+          existsInSelectedData: !!matchingKey,
+        });
+
+        if (mainGridColumn && matchingKey) {
+          dataToUpdate[mainGridColumn.fieldid] = selectedRowData[matchingKey];
+        }
+      });
+      console.log("Final data to update:", dataToUpdate);
+
+      setRowData((prevRowData) => {
+        const updatedRowData = [...prevRowData];
+        updatedRowData[selectedRowIndex] = {
+          ...updatedRowData[selectedRowIndex],
+          ...dataToUpdate, // Only matched fields
+        };
+        return updatedRowData;
+      });
+
+      setSelectedRowData(dataToUpdate);
+    } else {
+      alert("Please select a row in the main grid first!");
+    }
+  };
+  const output = gridHeader.find((col) => col.fieldid == "employeeno");
+  console.log(output);
+
+  // const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
+  //   // Drawer Close
+  //   setIsDrawerOpen(false);
+  //   // Check Main Grid Row Selected
+  //   if (selectedRowIndex !== null) {
+  //     // Applying Condition
+  //     const returnData = selectedRowConfig.map((item) => (item.multireturn == true ? item.multireturncolumn : item.singlereturncolumn));
+  //     const returnMainGrid = gridHeader.find((item) => item.fieldid == returnData);
+  //     console.log(returnMainGrid);
+
+  //     // const detailData = selectedRowData.map((item) => item[returnData] == )
+
+  //     setRowData((prevRowData) => {
+  //       const updatedRowData = [...prevRowData];
+  //       updatedRowData[selectedRowIndex] = {
+  //         ...updatedRowData[selectedRowIndex],
+  //         // ...selectedRowData,
+  //         ...returnData,
+  //       };
+  //       return updatedRowData;
+  //     });
+  //     // Updated the selectedRowData into Main Grid
+  //     setSelectedRowData(selectedRowData);
+  //     // setSelectedRowData(returnData);
+  //   } else {
+  //     alert("Please select a row in the main grid first!");
+  //   }
+  // };
+
   // Coloumn
   const columnDefs = useMemo(() => {
     return gridHeader
@@ -344,7 +430,7 @@ const ScreenGrid = () => {
         handleMenuClick={handleMenuClick}
       />
       {/* Drawer */}
-      <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} />
+      <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} onRowSelect={handleRowSelectFromDrawer} />
     </div>
   );
 };

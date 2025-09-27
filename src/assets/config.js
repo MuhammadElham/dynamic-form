@@ -99236,6 +99236,7 @@ export const config = {
           requiredindocumentstatus: false,
         },
       ],
+      // Column
       Headers: [
         {
           flexobjectfields: "flexpurchasepocostelementstaxlinessopercolPSPO",
@@ -102112,6 +102113,7 @@ export const config = {
           forimportrequired: false,
           requiredindocumentstatus: false,
         },
+        // Business Area Column
         {
           flexobjectfields: "flexpurchasepodtlsbusinessareanoPSPO",
           flexobject: "flexpurchasepodtls",
@@ -102284,6 +102286,7 @@ export const config = {
           forimportrequired: false,
           requiredindocumentstatus: false,
         },
+        // Special Indicator
         {
           flexobjectfields: "flexpurchasepodtlsspecialindicatornoPSPO",
           flexobject: "flexpurchasepodtls",
@@ -102372,6 +102375,7 @@ export const config = {
           forimportrequired: true,
           requiredindocumentstatus: false,
         },
+        // Name
         {
           flexobjectfields: "flexpurchasepodtlsprocurementcategorystxtPSPO",
           flexobject: "flexpurchasepodtls",
@@ -108230,7 +108234,7 @@ export const config = {
       OpenDocument: [],
       Translation: [],
     },
-    // 
+    //
     {
       Config: [
         {

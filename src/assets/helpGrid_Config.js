@@ -140,6 +140,8 @@ export const helpGridConfig = {
         singlereturncolumn: "employeeno",
         multireturn: true,
         multireturncolumn: "fullnamelang,name",
+        // multireturn: false,
+        // multireturncolumn: "businessareano,procurementcategorystxt,specialindicatorno",
         groupon: "",
         defaultload: true,
         defaultloadrange: 1,
@@ -157,13 +159,16 @@ export const helpGridConfig = {
         visibleblockdata: false,
       },
     ],
+    // Row
     Detail: [
       {
         remarks: "",
         employeeno: "03000001",
         titleno: "Mr.",
-        fullnamelang: "Owais  ",
-        name: "Owais  ",
+        fullnamelang: "Owais",
+        // procurementcategorystxt: "Owais",
+        // specialindicatorno:"Valid",
+        name: "Owais",
         previousemployeeno: "",
         employeetypeno: "Permanant",
         CNIC: null,
@@ -211,6 +216,7 @@ export const helpGridConfig = {
         reportingperson: null,
       },
     ],
+    // Column
     Header: [
       {
         ColumnID: "remarks",
@@ -303,6 +309,7 @@ export const helpGridConfig = {
         controltype: "UNK",
         applicationdatatype: "",
       },
+      // Business Area
       {
         ColumnID: "businessareano",
         ColumnText: "Business Area",
