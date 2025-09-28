@@ -1,9 +1,14 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Search } from "lucide-react";
+//
+import { registerHandleRowSelectFromDrawer } from "../redux/webConfigSlice";
+import { openDrawer, closeDrawer } from "../redux/webConfigSlice";
 
-const Input = ({ fieldid, value, onChange }) => {
-  const fieldFromConfig = useSelector((state) => state.webConfig.fieldConfig?.find((f) => f.fieldid === fieldid));
+const Input = ({ fieldid, value, onChange, onSearchClick }) => {
+  const dispatch = useDispatch();
+  const inputFieldConfig = useSelector((state) => state.webConfig.fieldConfig);
+  const fieldFromConfig = inputFieldConfig.find((f) => f.fieldid === fieldid);
   const fieldFromHeader = useSelector((state) => state.webConfig.fieldHeaders?.find((f) => f.fieldid === fieldid));
   const fieldHelpGridConfig = useSelector((state) => state.webConfig.helpGridConfig?.Criteria?.find((f) => f.fieldid === fieldid));
 
@@ -55,6 +60,78 @@ const Input = ({ fieldid, value, onChange }) => {
     NUM: <input type="number" max={inputlength} {...commonProps} />,
   };
 
+  //
+  const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
+  
+  dispatch(closeDrawer());
+
+  const config = selectedRowConfig[0];
+  
+  let returnFields = [];
+  if (config.multireturn === true) {
+    returnFields = config.multireturncolumn.split(",").map((field) => field.trim());
+  } else {
+    returnFields = [config.singlereturncolumn];
+  }
+
+  // Check if current input field matches any return field
+  const matchingField = returnFields.find(field => field === fieldid);
+  
+  if (matchingField && selectedRowData[matchingField]) {
+    const selectedValue = selectedRowData[matchingField];
+
+    // Directly update the DOM element
+    const inputElement = document.getElementById(fieldid);
+    
+    if (inputElement) {
+      inputElement.value = selectedValue;
+      
+      // Trigger change event
+      const event = new Event('input', { bubbles: true });
+      inputElement.dispatchEvent(event);
+    } else {
+      console.log("❌ Input element not found with id:", fieldid);
+    }
+  } else {
+    console.log("❌ No matching field or no value found");
+  }
+};
+  // const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
+  //   dispatch(closeDrawer());
+
+  //   console.log("selectedRowData = ", selectedRowData);
+
+  //   // Step 1: Get config (first item from array)
+  //   const config = selectedRowConfig[0];
+
+  //   // Step 2: Determine return fields based on multireturn flag
+  //   let returnFields = [];
+  //   if (config.multireturn === true) {
+  //     // Split comma-separated string: "fullnamelang,name" -> ["fullnamelang", "name"]
+  //     returnFields = config.multireturncolumn.split(",").map((field) => field.trim());
+  //   } else {
+  //     // Single return: ["employeeno"]
+  //     returnFields = [config.singlereturncolumn];
+  //   }
+
+  //   // Build Data for Input Field
+  //   const dataToUpdate = [];
+  //   returnFields.forEach((field) => {
+  //     const mainGridColumn = inputFieldConfig.find((header) => header.fieldid == field);
+  //     dataToUpdate[field] = selectedRowData[field];
+  //     // dataToUpdate = [employeeno: '03000001']
+  //   });
+
+  //   if (onChange) {
+  //     onChange(selectedValue);
+  //   } else {
+  //     commonProps.readOnly = false;
+  //   }
+  // };
+  React.useEffect(() => {
+    dispatch(registerHandleRowSelectFromDrawer(handleRowSelectFromDrawer));
+  }, [dispatch, handleRowSelectFromDrawer]);
+
   return (
     <div className="flex gap-3 mb-4" data-source={source}>
       <label htmlFor={fieldid} className="text-sm min-w-[140px]">
@@ -67,7 +144,7 @@ const Input = ({ fieldid, value, onChange }) => {
           renderField[controltype]
         )}
         {displayhelpobject && (
-          <button className="p-1 border rounded hover:bg-gray-100 cursor-pointer">
+          <button onClick={() => onSearchClick && onSearchClick()} className="p-1 border rounded hover:bg-gray-100 cursor-pointer">
             <Search size={16} />
           </button>
         )}

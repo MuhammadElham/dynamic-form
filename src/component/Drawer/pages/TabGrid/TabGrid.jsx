@@ -1,9 +1,15 @@
 import { AgGridReact } from "ag-grid-react";
 import React, { useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+// import { closeDrawer } from "../../../../redux/webConfigSlice";
 
-const TabGrid = ({ onRowDoubleClick }) => {
+const TabGrid = () => {
   const helpGridConfig = useSelector((state) => state.webConfig.helpGridConfig);
+  // import fn from Redux
+  const handleRowSelectFromDrawer = useSelector((state) => state.webConfig.handleRowSelectFromDrawerFn);
+ 
+  // handleDrawer
+  // const dispatch = useDispatch();
 
   const columnDefs = useMemo(() => {
     return (
@@ -41,8 +47,8 @@ const TabGrid = ({ onRowDoubleClick }) => {
 
   const handleRowDoubleClick = (params) => {
     // CallBack Function
-    if (onRowDoubleClick) {
-      onRowDoubleClick({
+    if (handleRowSelectFromDrawer) {
+      handleRowSelectFromDrawer({
         selectedRowConfig: helpGridConfig?.Grid?.Config,
         selectedRowData: params.data,
       });

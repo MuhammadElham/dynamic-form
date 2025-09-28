@@ -9,6 +9,9 @@ const initialState = {
   grids: config.Grids[4],
   // Drawer -> HelpGrid
   helpGridConfig: helpGridConfig,
+  // Drawer to Main Grid ka Function
+  handleRowSelectFromDrawerFn: null,
+  isOpen: false,
 };
 
 const webConfigSlice = createSlice({
@@ -21,8 +24,28 @@ const webConfigSlice = createSlice({
       state.translation = action.payload.translations;
       state.grids = action.payload.grids;
     },
+    registerHandleRowSelectFromDrawer: {
+      reducer: (state, action) => {
+        state.handleRowSelectFromDrawerFn = action.payload;
+      },
+      prepare: (fn) => {
+        return {
+          payload: fn,
+          meta: { ignoreSerializableCheck: true },
+        };
+      },
+    },
+    openDrawer: (state) => {
+      state.isOpen = true;
+    },
+    closeDrawer: (state) => {
+      state.isOpen = false;
+    },
+    toggleDrawer: (state) => {
+      state.isOpen = !state.isOpen;
+    },
   },
 });
 
-export const { setConfig } = webConfigSlice.actions;
+export const { setConfig, registerHandleRowSelectFromDrawer, openDrawer, closeDrawer, toggleDrawer } = webConfigSlice.actions;
 export default webConfigSlice.reducer;

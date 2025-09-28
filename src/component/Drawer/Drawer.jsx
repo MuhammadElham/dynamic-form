@@ -7,7 +7,7 @@ import ViewPage from "./pages/ViewPage/ViewPage";
 import ClearFilterPage from "./pages/ClearFilterPage";
 import SuggestionPage from "./pages/Suggestion/SuggestionPage";
 
-const Drawer = ({ isOpen, onClose, onRowSelect }) => {
+const Drawer = ({ isOpen, onClose }) => {
   const [showDrawer, setShowDrawer] = useState(isOpen);
   const [activePage, setActivePage] = useState("");
   const [isIconDrawerOpen, setIconDrawerOpen] = useState(false);
@@ -136,7 +136,7 @@ const Drawer = ({ isOpen, onClose, onRowSelect }) => {
 
               {/* Main Content */}
               <div className="flex-1 mx-5 overflow-hidden">
-                <SuggestionPage onRowSelect={onRowSelect} />
+                <SuggestionPage />
               </div>
             </main>
           </div>

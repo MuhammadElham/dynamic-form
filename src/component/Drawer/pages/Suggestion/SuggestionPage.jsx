@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import TabGrid from "../TabGrid/TabGrid";
 import { useSelector } from "react-redux";
 
-const SuggestionPage = ({onRowSelect}) => {
+const SuggestionPage = () => {
   const helpGridConfig = useSelector((state) => state.webConfig.helpGridConfig);
 
   const [activePage, setActivePage] = useState("");
@@ -45,7 +45,7 @@ const SuggestionPage = ({onRowSelect}) => {
       </div>
       {/* Content Page */}
       <div className="mt-6">
-        <TabGrid activeTab={activePage} onRowDoubleClick={onRowSelect}/>
+        <TabGrid activeTab={activePage} />
       </div>
     </div>
   );

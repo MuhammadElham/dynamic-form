@@ -3,14 +3,20 @@ import { AgGridReact } from "ag-grid-react";
 import ContextMenu from "./ContextMenu";
 import Button from "./Button";
 import CustomTimeField from "./CustomTimeField";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Download, Search, Blocks } from "lucide-react";
 import _ from "lodash";
 import RenderTabs from "./RenderTabs";
 import Drawer from "../Drawer/Drawer";
-
+// import { registerHandleRowSelectFromDrawer } from "../../redux/webConfigSlice";
+// import { openDrawer, closeDrawer } from "../../redux/webConfigSlice";
 const ScreenGrid = () => {
   const gridHeaderRedux = useSelector((state) => state.webConfig.grids.Headers);
+  // Input
+  // const inputFieldRedux = useSelector((state) => state.webConfig.fieldConfig);
+
+  // const isDrawerOpen = useSelector((state) => state.webConfig.isOpen);
+  const dispatch = useDispatch();
 
   // GridHeader State
   const [gridHeader, setGridHeader] = useState(gridHeaderRedux);
@@ -248,61 +254,55 @@ const ScreenGrid = () => {
   };
 
   //
-  const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
-    setIsDrawerOpen(false);
+  // const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
+  //   setIsDrawerOpen(false);
 
-    if (selectedRowIndex !== null) {
-      const config = selectedRowConfig[0];
+  //   // Step 1: Get config (first item from array)
+  //   const config = selectedRowConfig[0];
 
-      let returnFields = [];
-      if (config.multireturn === true) {
-        returnFields = config.multireturncolumn.split(",").map((field) => field.trim());
-      } else {
-        returnFields = [config.singlereturncolumn];
-      }
+  //   // Step 2: Determine return fields based on multireturn flag
+  //   let returnFields = [];
+  //   if (config.multireturn === true) {
+  //     // Split comma-separated string: "fullnamelang,name" -> ["fullnamelang", "name"]
+  //     returnFields = config.multireturncolumn.split(",").map((field) => field.trim());
+  //   } else {
+  //     // Single return: ["employeeno"]
+  //     returnFields = [config.singlereturncolumn];
+  //   }
 
-      console.log(
-        "Main grid headers fieldids:",
-        gridHeader.map((h) => h.fieldid)
-      );
-      console.log("Looking for fields:", returnFields);
-      console.log("Selected row data keys:", Object.keys(selectedRowData));
+  //   // Step 3: Build data object for main grid
+  //   const dataToUpdate = {};
 
-      const dataToUpdate = {};
+  //   returnFields.forEach((field) => {
+  //     // Check if main grid has a column with this fieldid
+  //     const mainGridColumn = gridHeader.find((header) => header.fieldid === field);
+      
+  //     if (mainGridColumn && selectedRowData[field] !== undefined) {
+  //       // Place the value from drawer detail into main grid
+  //       dataToUpdate[field] = selectedRowData[field];
+  //     }
+  //   });
 
-      returnFields.forEach((field) => {
-        const mainGridColumn = gridHeader.find((header) => header.fieldid.toLowerCase() === field.toLowerCase());
+  //   console.log("Fields to return:", returnFields);
+  //   console.log("Data to update:", dataToUpdate);
 
-        const matchingKey = Object.keys(selectedRowData).find((key) => key.toLowerCase() === field.toLowerCase());
+  //   // Step 4: Update main grid with matched field data only
+  //   setRowData((prevRowData) => {
+  //     const updatedRowData = [...prevRowData];
+  //     updatedRowData[selectedRowIndex] = {
+  //       ...updatedRowData[selectedRowIndex],
+  //       ...dataToUpdate, // Only matched fields
+  //     };
+  //     return updatedRowData;
+  //   });
+  //   // InputField Update
 
-        console.log(`Field '${field}':`, {
-          foundInMainGrid: !!mainGridColumn,
-          valueInSelectedData: matchingKey ? selectedRowData[matchingKey] : undefined,
-          existsInSelectedData: !!matchingKey,
-        });
-
-        if (mainGridColumn && matchingKey) {
-          dataToUpdate[mainGridColumn.fieldid] = selectedRowData[matchingKey];
-        }
-      });
-      console.log("Final data to update:", dataToUpdate);
-
-      setRowData((prevRowData) => {
-        const updatedRowData = [...prevRowData];
-        updatedRowData[selectedRowIndex] = {
-          ...updatedRowData[selectedRowIndex],
-          ...dataToUpdate, // Only matched fields
-        };
-        return updatedRowData;
-      });
-
-      setSelectedRowData(dataToUpdate);
-    } else {
-      alert("Please select a row in the main grid first!");
-    }
-  };
-  const output = gridHeader.find((col) => col.fieldid == "employeeno");
-  console.log(output);
+  //   setSelectedRowData(dataToUpdate);
+  // };
+  
+  // React.useEffect(() => {
+  //   dispatch(registerHandleRowSelectFromDrawer(handleRowSelectFromDrawer));
+  // }, [dispatch, handleRowSelectFromDrawer]);
 
   // const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
   //   // Drawer Close
@@ -430,7 +430,7 @@ const ScreenGrid = () => {
         handleMenuClick={handleMenuClick}
       />
       {/* Drawer */}
-      <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} onRowSelect={handleRowSelectFromDrawer} />
+      <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} />
     </div>
   );
 };
