@@ -8,12 +8,11 @@ import { Download, Search, Blocks } from "lucide-react";
 import _ from "lodash";
 import RenderTabs from "./RenderTabs";
 import Drawer from "../Drawer/Drawer";
-import { registerHandleRowSelectFromDrawer } from "../../redux/webConfigSlice";
-// import { openDrawer, closeDrawer } from "../../redux/webConfigSlice";
+import { openDrawer, closeDrawer, registerHandleRowSelectFromDrawer } from "../../redux/webConfigSlice";
+
 const ScreenGrid = () => {
   const gridHeaderRedux = useSelector((state) => state.webConfig.grids.Headers);
-  // Input
-  // const inputFieldRedux = useSelector((state) => state.webConfig.fieldConfig);
+  const isDrawerOpen = useSelector((state) => state.webConfig.isOpen); 
 
   const dispatch = useDispatch();
 
@@ -39,9 +38,6 @@ const ScreenGrid = () => {
 
   // Editable
   const [allColumnsEditable, setAllColumnsEditable] = useState(false);
-
-  // Drawer
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Condition for linedetailfieldconfig
   const lineDetailFieldConfig = useMemo(() => {
@@ -244,93 +240,59 @@ const ScreenGrid = () => {
   };
   // Open Drawer
   const handleCellDoubleClicked = () => {
-    setIsDrawerOpen(true);
-  };
-
-  // Close Drawer
-  const closeDrawer = () => {
-    setIsDrawerOpen(false);
+    dispatch(openDrawer());
   };
 
   //
-  // const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
-  //   setIsDrawerOpen(false);
+  const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
+    // setIsDrawerOpen(false);
+    dispatch(closeDrawer());
 
-  //   // Step 1: Get config (first item from array)
-  //   const config = selectedRowConfig[0];
+    // Step 1: Get config (first item from array)
+    const config = selectedRowConfig[0];
 
-  //   // Step 2: Determine return fields based on multireturn flag
-  //   let returnFields = [];
-  //   if (config.multireturn === true) {
-  //     // Split comma-separated string: "fullnamelang,name" -> ["fullnamelang", "name"]
-  //     returnFields = config.multireturncolumn.split(",").map((field) => field.trim());
-  //   } else {
-  //     // Single return: ["employeeno"]
-  //     returnFields = [config.singlereturncolumn];
-  //   }
+    // Step 2: Determine return fields based on multireturn flag
+    let returnFields = [];
+    if (config.multireturn === true) {
+      // Split comma-separated string: "fullnamelang,name" -> ["fullnamelang", "name"]
+      returnFields = config.multireturncolumn.split(",").map((field) => field.trim());
+    } else {
+      // Single return: ["employeeno"]
+      returnFields = [config.singlereturncolumn];
+    }
 
-  //   // Step 3: Build data object for main grid
-  //   const dataToUpdate = {};
+    // Step 3: Build data object for main grid
+    const dataToUpdate = {};
 
-  //   returnFields.forEach((field) => {
-  //     // Check if main grid has a column with this fieldid
-  //     const mainGridColumn = gridHeader.find((header) => header.fieldid === field);
-      
-  //     if (mainGridColumn && selectedRowData[field] !== undefined) {
-  //       // Place the value from drawer detail into main grid
-  //       dataToUpdate[field] = selectedRowData[field];
-  //     }
-  //   });
+    returnFields.forEach((field) => {
+      // Check if main grid has a column with this fieldid
+      const mainGridColumn = gridHeader.find((header) => header.fieldid === field);
 
-  //   console.log("Fields to return:", returnFields);
-  //   console.log("Data to update:", dataToUpdate);
+      if (mainGridColumn && selectedRowData[field] !== undefined) {
+        // Place the value from drawer detail into main grid
+        dataToUpdate[field] = selectedRowData[field];
+      }
+    });
 
-  //   // Step 4: Update main grid with matched field data only
-  //   setRowData((prevRowData) => {
-  //     const updatedRowData = [...prevRowData];
-  //     updatedRowData[selectedRowIndex] = {
-  //       ...updatedRowData[selectedRowIndex],
-  //       ...dataToUpdate, // Only matched fields
-  //     };
-  //     return updatedRowData;
-  //   });
-  //   // InputField Update
+    console.log("Fields to return:", returnFields);
+    console.log("Data to update:", dataToUpdate);
 
-  //   setSelectedRowData(dataToUpdate);
-  // };
-  
-  // React.useEffect(() => {
-  //   dispatch(registerHandleRowSelectFromDrawer(handleRowSelectFromDrawer));
-  // }, [dispatch, handleRowSelectFromDrawer]);
+    // Step 4: Update main grid with matched field data only
+    setRowData((prevRowData) => {
+      const updatedRowData = [...prevRowData];
+      updatedRowData[selectedRowIndex] = {
+        ...updatedRowData[selectedRowIndex],
+        ...dataToUpdate, // Only matched fields
+      };
+      return updatedRowData;
+    });
+    // InputField Update
+    setSelectedRowData(dataToUpdate);
+  };
 
-  // const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
-  //   // Drawer Close
-  //   setIsDrawerOpen(false);
-  //   // Check Main Grid Row Selected
-  //   if (selectedRowIndex !== null) {
-  //     // Applying Condition
-  //     const returnData = selectedRowConfig.map((item) => (item.multireturn == true ? item.multireturncolumn : item.singlereturncolumn));
-  //     const returnMainGrid = gridHeader.find((item) => item.fieldid == returnData);
-  //     console.log(returnMainGrid);
-
-  //     // const detailData = selectedRowData.map((item) => item[returnData] == )
-
-  //     setRowData((prevRowData) => {
-  //       const updatedRowData = [...prevRowData];
-  //       updatedRowData[selectedRowIndex] = {
-  //         ...updatedRowData[selectedRowIndex],
-  //         // ...selectedRowData,
-  //         ...returnData,
-  //       };
-  //       return updatedRowData;
-  //     });
-  //     // Updated the selectedRowData into Main Grid
-  //     setSelectedRowData(selectedRowData);
-  //     // setSelectedRowData(returnData);
-  //   } else {
-  //     alert("Please select a row in the main grid first!");
-  //   }
-  // };
+  React.useEffect(() => {
+    dispatch(registerHandleRowSelectFromDrawer(handleRowSelectFromDrawer));
+  }, [dispatch, handleRowSelectFromDrawer]);
 
   // Coloumn
   const columnDefs = useMemo(() => {
@@ -429,7 +391,7 @@ const ScreenGrid = () => {
         handleMenuClick={handleMenuClick}
       />
       {/* Drawer */}
-      <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} />
+      <Drawer isOpen={isDrawerOpen} onClose={() => dispatch(closeDrawer())} />
     </div>
   );
 };

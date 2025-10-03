@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const TabGrid = () => {
-  const inputGridConfig = useSelector((state) => state.webConfig.inputGridConfig);
+  const inputGridConfig = useSelector((state) => state.webConfig.helpGridConfig);
   // import fn from Redux
   const handleRowSelectFromDrawer = useSelector((state) => state.webConfig.handleRowSelectFromDrawerFn);
 

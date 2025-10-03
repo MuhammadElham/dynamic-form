@@ -63,43 +63,43 @@ const Input = ({ fieldid, value, onChange }) => {
   };
 
   // Function of Drawer row selection
-  const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
-    dispatch(closeDrawer());
+  // const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
+  //   dispatch(closeDrawer());
 
-    const config = selectedRowConfig[0];
+  //   const config = selectedRowConfig[0];
 
-    let returnFields = [];
-    if (config.multireturn === true) {
-      returnFields = config.multireturncolumn.split(",").map((field) => field.trim());
-    } else {
-      returnFields = [config.singlereturncolumn];
-    }
+  //   let returnFields = [];
+  //   if (config.multireturn === true) {
+  //     returnFields = config.multireturncolumn.split(",").map((field) => field.trim());
+  //   } else {
+  //     returnFields = [config.singlereturncolumn];
+  //   }
 
-    // Check if current input field matches any return field
-    const matchingField = returnFields.find((field) => field === fieldid);
+  //   // Check if current input field matches any return field
+  //   const matchingField = returnFields.find((field) => field === fieldid);
 
-    if (matchingField && selectedRowData[matchingField]) {
-      const selectedValue = selectedRowData[matchingField];
+  //   if (matchingField && selectedRowData[matchingField]) {
+  //     const selectedValue = selectedRowData[matchingField];
 
-      // Directly update the DOM element
-      const inputElement = document.getElementById(fieldid);
+  //     // Directly update the DOM element
+  //     const inputElement = document.getElementById(fieldid);
 
-      if (inputElement) {
-        inputElement.value = selectedValue;
+  //     if (inputElement) {
+  //       inputElement.value = selectedValue;
 
-        // Trigger change event
-        const event = new Event("input", { bubbles: true });
-        inputElement.dispatchEvent(event);
-      } else {
-        console.log("❌ Input element not found with id:", fieldid);
-      }
-    } else {
-      console.log("❌ No matching field or no value found");
-    }
-  };
-  React.useEffect(() => {
-    dispatch(registerHandleRowSelectFromDrawer(handleRowSelectFromDrawer));
-  }, [dispatch, handleRowSelectFromDrawer]);
+  //       // Trigger change event
+  //       const event = new Event("input", { bubbles: true });
+  //       inputElement.dispatchEvent(event);
+  //     } else {
+  //       console.log("❌ Input element not found with id:", fieldid);
+  //     }
+  //   } else {
+  //     console.log("❌ No matching field or no value found");
+  //   }
+  // };
+  // React.useEffect(() => {
+  //   dispatch(registerHandleRowSelectFromDrawer(handleRowSelectFromDrawer));
+  // }, [dispatch, handleRowSelectFromDrawer]);
 
   return (
     <div className="flex gap-3 mb-4" data-source={source}>

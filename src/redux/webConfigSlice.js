@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { config } from "../assets/config.js";
 import { inputGridConfig } from "../assets/inputGrid_Config.js";
+import { helpGridConfig } from "../assets/helpGrid_Config.js";
 
 const initialState = {
   fieldConfig: config.Fields.Config,
@@ -9,6 +10,8 @@ const initialState = {
   grids: config.Grids[4],
   // Drawer -> InputGrid
   inputGridConfig: inputGridConfig,
+  // Drawer -> HelpGrid
+  helpGridConfig: helpGridConfig,
   // Drawer to Main Grid ka Function
   handleRowSelectFromDrawerFn: null,
   isOpen: false,
