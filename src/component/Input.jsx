@@ -12,6 +12,11 @@ const Input = ({ fieldid, value, onChange }) => {
   const fieldFromHeader = useSelector((state) => state.webConfig.fieldHeaders?.find((f) => f.fieldid === fieldid));
   const fieldInputGridConfig = useSelector((state) => state.webConfig.inputGridConfig?.Criteria?.find((f) => f.fieldid === fieldid));
   //
+  const activeFieldId = useSelector((state) => state.webConfig.activeFieldId);
+  const selectedDrawerData = useSelector((state) => state.webConfig.selectedDrawerData);
+
+  //
+  const inputGridConfig = useSelector((state) => state.webConfig.inputGridConfig);
   const drawerConfig = useSelector((state) => state.webConfig.inputGridConfig.Criteria);
 
   // Priority logic: Header first, then Config
@@ -62,9 +67,12 @@ const Input = ({ fieldid, value, onChange }) => {
     NUM: <input type="number" max={inputlength} {...commonProps} />,
   };
 
-  // Function of Drawer row selection
+  //
   // const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
+  //   if (activeFieldId !== fieldid) return;
+
   //   dispatch(closeDrawer());
+  //   dispatch(setActiveField(null));
 
   //   const config = selectedRowConfig[0];
 
@@ -101,6 +109,15 @@ const Input = ({ fieldid, value, onChange }) => {
   //   dispatch(registerHandleRowSelectFromDrawer(handleRowSelectFromDrawer));
   // }, [dispatch, handleRowSelectFromDrawer]);
 
+  React.useEffect(() => {
+    if (activeFieldId == fieldid && selectedDrawerData) {
+      const inputElement = document.getElementById(fieldid);
+      if (inputElement && selectedDrawerData[fieldid]) {
+        inputElement.value = selectedDrawerData[fieldid];
+      }
+    }
+  }, [selectedDrawerData, activeFieldId, fieldid]);
+
   return (
     <div className="flex gap-3 mb-4" data-source={source}>
       <label htmlFor={fieldid} className="text-sm min-w-[140px]">
@@ -116,10 +133,12 @@ const Input = ({ fieldid, value, onChange }) => {
           <button
             onClick={() => {
               dispatch(setActiveField(fieldid));
+
               const config = drawerConfig.find((item) => item.displayhelpobject == displayhelpobject);
+              console.log(config);
 
               if (config) {
-                dispatch(setActiveDrawerConfig(config));
+                dispatch(setActiveDrawerConfig(inputGridConfig));
                 dispatch(openDrawer());
               } else {
                 console.log(`Config "${displayhelpobject}" not found`);

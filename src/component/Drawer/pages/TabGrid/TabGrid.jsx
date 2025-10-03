@@ -3,13 +3,14 @@ import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const TabGrid = () => {
-  const inputGridConfig = useSelector((state) => state.webConfig.helpGridConfig);
+  const activeDrawerConfig = useSelector((state) => state.webConfig.activeDrawerConfig);
+
   // import fn from Redux
   const handleRowSelectFromDrawer = useSelector((state) => state.webConfig.handleRowSelectFromDrawerFn);
 
   const columnDefs = useMemo(() => {
     return (
-      inputGridConfig?.Grid?.Header?.map((header) => ({
+      activeDrawerConfig?.Grid?.Header?.map((header) => ({
         headerName: header.ColumnText,
         field: header.ColumnID,
         minWidth: parseInt(header.ColumnWidth) || header.ColumnWidth,
@@ -35,17 +36,17 @@ const TabGrid = () => {
             : undefined,
       })) || []
     );
-  }, [inputGridConfig]);
+  }, [activeDrawerConfig]);
 
   const rowData = useMemo(() => {
-    return inputGridConfig?.Grid?.Detail || [];
-  }, [inputGridConfig]);
+    return activeDrawerConfig?.Grid?.Detail || [];
+  }, [activeDrawerConfig]);
 
   const handleRowDoubleClick = (params) => {
     // CallBack Function
     if (handleRowSelectFromDrawer) {
       handleRowSelectFromDrawer({
-        selectedRowConfig: inputGridConfig?.Grid?.Config,
+        selectedRowConfig: activeDrawerConfig?.Grid?.Config,
         selectedRowData: params.data,
       });
     }

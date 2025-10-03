@@ -8,11 +8,19 @@ import { Download, Search, Blocks } from "lucide-react";
 import _ from "lodash";
 import RenderTabs from "./RenderTabs";
 import Drawer from "../Drawer/Drawer";
-import { openDrawer, closeDrawer, registerHandleRowSelectFromDrawer } from "../../redux/webConfigSlice";
+import {
+  openDrawer,
+  closeDrawer,
+  registerHandleRowSelectFromDrawer,
+  setActiveDrawerConfig,
+  setSelectedDrawerData,
+  setActiveField,
+} from "../../redux/webConfigSlice";
 
 const ScreenGrid = () => {
   const gridHeaderRedux = useSelector((state) => state.webConfig.grids.Headers);
-  const isDrawerOpen = useSelector((state) => state.webConfig.isOpen); 
+  const isDrawerOpen = useSelector((state) => state.webConfig.isOpen);
+  const helpGridConfig = useSelector((state) => state.webConfig.helpGridConfig);
 
   const dispatch = useDispatch();
 
@@ -240,12 +248,14 @@ const ScreenGrid = () => {
   };
   // Open Drawer
   const handleCellDoubleClicked = () => {
+    dispatch(setActiveDrawerConfig(helpGridConfig));
     dispatch(openDrawer());
   };
 
   //
   const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
-    // setIsDrawerOpen(false);
+
+    dispatch(setSelectedDrawerData(selectedRowData));
     dispatch(closeDrawer());
 
     // Step 1: Get config (first item from array)

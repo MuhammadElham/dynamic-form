@@ -18,6 +18,8 @@ const initialState = {
   // Dynamic drawer management
   activeDrawerConfig: null,
   activeFieldId: false,
+  //
+  selectedDrawerData: null,
 };
 
 const webConfigSlice = createSlice({
@@ -57,9 +59,20 @@ const webConfigSlice = createSlice({
     setActiveField: (state, action) => {
       state.activeFieldId = action.payload;
     },
+    setSelectedDrawerData: (state, action) => {
+      state.selectedDrawerData = action.payload;
+    },
   },
 });
 
-export const { setConfig, registerHandleRowSelectFromDrawer, openDrawer, closeDrawer, toggleDrawer, setActiveDrawerConfig, setActiveField } =
-  webConfigSlice.actions;
+export const {
+  setConfig,
+  registerHandleRowSelectFromDrawer,
+  openDrawer,
+  closeDrawer,
+  toggleDrawer,
+  setActiveDrawerConfig,
+  setActiveField,
+  setSelectedDrawerData,
+} = webConfigSlice.actions;
 export default webConfigSlice.reducer;
