@@ -8,14 +8,13 @@ import { Download, Search, Blocks } from "lucide-react";
 import _ from "lodash";
 import RenderTabs from "./RenderTabs";
 import Drawer from "../Drawer/Drawer";
-// import { registerHandleRowSelectFromDrawer } from "../../redux/webConfigSlice";
+import { registerHandleRowSelectFromDrawer } from "../../redux/webConfigSlice";
 // import { openDrawer, closeDrawer } from "../../redux/webConfigSlice";
 const ScreenGrid = () => {
   const gridHeaderRedux = useSelector((state) => state.webConfig.grids.Headers);
   // Input
   // const inputFieldRedux = useSelector((state) => state.webConfig.fieldConfig);
 
-  // const isDrawerOpen = useSelector((state) => state.webConfig.isOpen);
   const dispatch = useDispatch();
 
   // GridHeader State

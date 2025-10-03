@@ -2,22 +2,24 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Search } from "lucide-react";
 //
-import { registerHandleRowSelectFromDrawer } from "../redux/webConfigSlice";
+import { registerHandleRowSelectFromDrawer, setActiveField, setActiveDrawerConfig } from "../redux/webConfigSlice";
 import { openDrawer, closeDrawer } from "../redux/webConfigSlice";
 
-const Input = ({ fieldid, value, onChange, onSearchClick }) => {
+const Input = ({ fieldid, value, onChange }) => {
   const dispatch = useDispatch();
   const inputFieldConfig = useSelector((state) => state.webConfig.fieldConfig);
   const fieldFromConfig = inputFieldConfig.find((f) => f.fieldid === fieldid);
   const fieldFromHeader = useSelector((state) => state.webConfig.fieldHeaders?.find((f) => f.fieldid === fieldid));
-  const fieldHelpGridConfig = useSelector((state) => state.webConfig.helpGridConfig?.Criteria?.find((f) => f.fieldid === fieldid));
+  const fieldInputGridConfig = useSelector((state) => state.webConfig.inputGridConfig?.Criteria?.find((f) => f.fieldid === fieldid));
+  //
+  const drawerConfig = useSelector((state) => state.webConfig.inputGridConfig.Criteria);
 
   // Priority logic: Header first, then Config
   let field = null;
   let source = "";
 
-  if (fieldHelpGridConfig && fieldHelpGridConfig.displayhelpobject) {
-    field = fieldHelpGridConfig;
+  if (fieldInputGridConfig && fieldInputGridConfig.displayhelpobject) {
+    field = fieldInputGridConfig;
     source = "CRITERIA";
   } else if (fieldFromHeader) {
     field = fieldFromHeader;
@@ -60,74 +62,41 @@ const Input = ({ fieldid, value, onChange, onSearchClick }) => {
     NUM: <input type="number" max={inputlength} {...commonProps} />,
   };
 
-  //
+  // Function of Drawer row selection
   const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
-  
-  dispatch(closeDrawer());
+    dispatch(closeDrawer());
 
-  const config = selectedRowConfig[0];
-  
-  let returnFields = [];
-  if (config.multireturn === true) {
-    returnFields = config.multireturncolumn.split(",").map((field) => field.trim());
-  } else {
-    returnFields = [config.singlereturncolumn];
-  }
+    const config = selectedRowConfig[0];
 
-  // Check if current input field matches any return field
-  const matchingField = returnFields.find(field => field === fieldid);
-  
-  if (matchingField && selectedRowData[matchingField]) {
-    const selectedValue = selectedRowData[matchingField];
-
-    // Directly update the DOM element
-    const inputElement = document.getElementById(fieldid);
-    
-    if (inputElement) {
-      inputElement.value = selectedValue;
-      
-      // Trigger change event
-      const event = new Event('input', { bubbles: true });
-      inputElement.dispatchEvent(event);
+    let returnFields = [];
+    if (config.multireturn === true) {
+      returnFields = config.multireturncolumn.split(",").map((field) => field.trim());
     } else {
-      console.log("❌ Input element not found with id:", fieldid);
+      returnFields = [config.singlereturncolumn];
     }
-  } else {
-    console.log("❌ No matching field or no value found");
-  }
-};
-  // const handleRowSelectFromDrawer = ({ selectedRowConfig, selectedRowData }) => {
-  //   dispatch(closeDrawer());
 
-  //   console.log("selectedRowData = ", selectedRowData);
+    // Check if current input field matches any return field
+    const matchingField = returnFields.find((field) => field === fieldid);
 
-  //   // Step 1: Get config (first item from array)
-  //   const config = selectedRowConfig[0];
+    if (matchingField && selectedRowData[matchingField]) {
+      const selectedValue = selectedRowData[matchingField];
 
-  //   // Step 2: Determine return fields based on multireturn flag
-  //   let returnFields = [];
-  //   if (config.multireturn === true) {
-  //     // Split comma-separated string: "fullnamelang,name" -> ["fullnamelang", "name"]
-  //     returnFields = config.multireturncolumn.split(",").map((field) => field.trim());
-  //   } else {
-  //     // Single return: ["employeeno"]
-  //     returnFields = [config.singlereturncolumn];
-  //   }
+      // Directly update the DOM element
+      const inputElement = document.getElementById(fieldid);
 
-  //   // Build Data for Input Field
-  //   const dataToUpdate = [];
-  //   returnFields.forEach((field) => {
-  //     const mainGridColumn = inputFieldConfig.find((header) => header.fieldid == field);
-  //     dataToUpdate[field] = selectedRowData[field];
-  //     // dataToUpdate = [employeeno: '03000001']
-  //   });
+      if (inputElement) {
+        inputElement.value = selectedValue;
 
-  //   if (onChange) {
-  //     onChange(selectedValue);
-  //   } else {
-  //     commonProps.readOnly = false;
-  //   }
-  // };
+        // Trigger change event
+        const event = new Event("input", { bubbles: true });
+        inputElement.dispatchEvent(event);
+      } else {
+        console.log("❌ Input element not found with id:", fieldid);
+      }
+    } else {
+      console.log("❌ No matching field or no value found");
+    }
+  };
   React.useEffect(() => {
     dispatch(registerHandleRowSelectFromDrawer(handleRowSelectFromDrawer));
   }, [dispatch, handleRowSelectFromDrawer]);
@@ -144,7 +113,20 @@ const Input = ({ fieldid, value, onChange, onSearchClick }) => {
           renderField[controltype]
         )}
         {displayhelpobject && (
-          <button onClick={() => onSearchClick && onSearchClick()} className="p-1 border rounded hover:bg-gray-100 cursor-pointer">
+          <button
+            onClick={() => {
+              dispatch(setActiveField(fieldid));
+              const config = drawerConfig.find((item) => item.displayhelpobject == displayhelpobject);
+
+              if (config) {
+                dispatch(setActiveDrawerConfig(config));
+                dispatch(openDrawer());
+              } else {
+                console.log(`Config "${displayhelpobject}" not found`);
+              }
+            }}
+            className="p-1 border rounded hover:bg-gray-100 cursor-pointer"
+          >
             <Search size={16} />
           </button>
         )}

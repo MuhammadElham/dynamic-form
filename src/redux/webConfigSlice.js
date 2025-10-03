@@ -1,17 +1,20 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { config } from "../assets/config.js";
-import { helpGridConfig } from "../assets/helpGrid_Config.js";
+import { inputGridConfig } from "../assets/inputGrid_Config.js";
 
 const initialState = {
   fieldConfig: config.Fields.Config,
   fieldHeaders: config.Grids[4]?.Headers,
   translation: config.Fields.ControlTranslations,
   grids: config.Grids[4],
-  // Drawer -> HelpGrid
-  helpGridConfig: helpGridConfig,
+  // Drawer -> InputGrid
+  inputGridConfig: inputGridConfig,
   // Drawer to Main Grid ka Function
   handleRowSelectFromDrawerFn: null,
   isOpen: false,
+  // Dynamic drawer management
+  activeDrawerConfig: null,
+  activeFieldId: false,
 };
 
 const webConfigSlice = createSlice({
@@ -44,8 +47,16 @@ const webConfigSlice = createSlice({
     toggleDrawer: (state) => {
       state.isOpen = !state.isOpen;
     },
+    //
+    setActiveDrawerConfig: (state, action) => {
+      state.activeDrawerConfig = action.payload;
+    },
+    setActiveField: (state, action) => {
+      state.activeFieldId = action.payload;
+    },
   },
 });
 
-export const { setConfig, registerHandleRowSelectFromDrawer, openDrawer, closeDrawer, toggleDrawer } = webConfigSlice.actions;
+export const { setConfig, registerHandleRowSelectFromDrawer, openDrawer, closeDrawer, toggleDrawer, setActiveDrawerConfig, setActiveField } =
+  webConfigSlice.actions;
 export default webConfigSlice.reducer;

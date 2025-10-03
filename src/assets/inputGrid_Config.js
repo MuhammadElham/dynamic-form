@@ -1,4 +1,4 @@
-export const helpGridConfig = {
+export const inputGridConfig = {
   Criteria: [
     {
       helpobjectfields: "HELPEPEM_00cocode",

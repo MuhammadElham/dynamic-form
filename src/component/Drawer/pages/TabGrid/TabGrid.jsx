@@ -1,19 +1,15 @@
 import { AgGridReact } from "ag-grid-react";
 import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { closeDrawer } from "../../../../redux/webConfigSlice";
 
 const TabGrid = () => {
-  const helpGridConfig = useSelector((state) => state.webConfig.helpGridConfig);
+  const inputGridConfig = useSelector((state) => state.webConfig.inputGridConfig);
   // import fn from Redux
   const handleRowSelectFromDrawer = useSelector((state) => state.webConfig.handleRowSelectFromDrawerFn);
- 
-  // handleDrawer
-  // const dispatch = useDispatch();
 
   const columnDefs = useMemo(() => {
     return (
-      helpGridConfig?.Grid?.Header?.map((header) => ({
+      inputGridConfig?.Grid?.Header?.map((header) => ({
         headerName: header.ColumnText,
         field: header.ColumnID,
         minWidth: parseInt(header.ColumnWidth) || header.ColumnWidth,
@@ -39,17 +35,17 @@ const TabGrid = () => {
             : undefined,
       })) || []
     );
-  }, [helpGridConfig]);
+  }, [inputGridConfig]);
 
   const rowData = useMemo(() => {
-    return helpGridConfig?.Grid?.Detail || [];
-  }, [helpGridConfig]);
+    return inputGridConfig?.Grid?.Detail || [];
+  }, [inputGridConfig]);
 
   const handleRowDoubleClick = (params) => {
     // CallBack Function
     if (handleRowSelectFromDrawer) {
       handleRowSelectFromDrawer({
-        selectedRowConfig: helpGridConfig?.Grid?.Config,
+        selectedRowConfig: inputGridConfig?.Grid?.Config,
         selectedRowData: params.data,
       });
     }
